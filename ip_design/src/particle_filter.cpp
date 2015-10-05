@@ -566,8 +566,9 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 	data_t rn_resampling, rn_particles_saved, weights_sum, rn;//, rn_array;
 	uint32_t index_saved_keep = 0;
 	uint32_t block, index;
-	data_t proposed_particle;
-	data_t previous_particle;
+	//data_t proposed_particle[theta_dim];
+	//data_t previous_particle[theta_dim];
+	data_t particle_common;
 
 	//transition related
 	//data_t delta, s_t;
@@ -643,15 +644,15 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 			parallelism_loop: for (unsigned int k=0; k<M_ti_int; k++){
 
 				//for (unsigned int q=0; q<theta_dim; q++){
-					//previous_particle[k*theta_dim + q] = particles_temp[k*chunk_size_max + i + q];
+				//	previous_particle[q] = particles_temp[k*chunk_size_max + i + q];
 				//}
-				previous_particle = particles_temp[k*chunk_size_max + i];
-				transition_density(&previous_particle, &proposed_particle, rng_state, k, t, chunk_size_max, state_parameters);
-				//transition_density(&particles_temp[k*chunk_size_max + i], &particles[k*chunk_size_max + i], rng_state, k, t, chunk_size_max, state_parameters);
+				//previous_particle = particles_temp[k*chunk_size_max + i];
+				//transition_density(previous_particle, proposed_particle, rng_state, k, t, chunk_size_max, state_parameters);
+				transition_density(&particles_temp[k*chunk_size_max + i], &particles[k*chunk_size_max + i], rng_state, k, t, chunk_size_max, state_parameters);
 				//u1 = __random32(&rng_state[k*2]);
 				//u2 = __random32(&rng_state[k*2+1]);
 				//rn = approx(u1, u2);
-				//particle_common = particles_temp[k*chunk_size_max + i] + s_t * rn;
+				particle_common = particles[k*chunk_size_max + i];// + s_t * rn;
 
 				//for (unsigned int q=0; q<theta_dim; q++){
 				//	particles[k*chunk_size_max + i + q] = proposed_particle[q]; //particle_common;
@@ -662,8 +663,8 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 					u3 = __random32(&rng_state[M_ti_int*2 + k*obs_dim*2 + j*2]);
 					u4 = __random32(&rng_state[M_ti_int*2 + k*obs_dim*2 + j*2 + 1]);
 					rn = approx(u3, u4);
-					//temp = particles[k*chunk_size_max + i] + s_o * rn;//rn[k*chunk_size_data + i*obs_dim_max_size + j]; // * PF_likelihood_rn[t*P*obs_dim + i*obs_dim + j];
-					temp = proposed_particle + s_o * rn;
+					//temp = proposed_particle[0] + s_o * rn;//particles[k*chunk_size_max + i] + s_o * rn;//rn[k*chunk_size_data + i*obs_dim_max_size + j]; // * PF_likelihood_rn[t*P*obs_dim + i*obs_dim + j];
+					temp = particle_common + s_o * rn;
 					if ( temp > FP_power_max ){
 						//temp2 = FP_inf_pos;
 						p = 1.0f;
