@@ -32,11 +32,13 @@ const uint32_t prior_parameters_dim = 5;
 //other parameters - variable but with some maximum
 const uint32_t particles_max_size = 16384;
 const uint32_t state_count_max_size = 16384;
-const uint32_t state_param_fixed_dim_max_size = state_count_max_size*state_dim;
-const uint32_t obs_param_fixed_dim_max_size = state_count_max_size*obs_dim*state_dim;
+const uint32_t state_param_fixed_dim = 1;
+const uint32_t state_param_fixed_dim_max_size = state_count_max_size*state_param_fixed_dim;
+const uint32_t obs_param_fixed_dim = obs_dim;
+const uint32_t obs_param_fixed_dim_max_size = state_count_max_size*obs_param_fixed_dim;
 const uint32_t state_param_dim_max_size = state_param_fixed_dim_max_size + state_param_rand_dim;
 const uint32_t obs_param_dim_max_size = obs_param_fixed_dim_max_size + obs_param_rand_dim; //2050; //fixed: n for all observations, random: 1
-const uint32_t data_dim_max_size = state_count_max_size * obs_dim * state_dim;
+const uint32_t data_dim_max_size = state_count_max_size * obs_dim; //*state_dim
 
 const uint32_t chunk_size_max = (particles_max_size*state_dim)/(M_ti_int); //block partitioning
 const uint32_t chunk_size_particles_max = (particles_max_size)/(M_ti_int); //block partitioning

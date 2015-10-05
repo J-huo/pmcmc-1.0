@@ -4,6 +4,23 @@
 
 //using namespace hls;
 
+void transition_density(data_t *previous_particle, data_t *proposed_particle, rng_state_t *rng_state, uint32_t k, uint32_t t, uint32_t chunk_size_max, data_t *state_parameters){
+
+	//transition related
+		data_t delta, s_t;
+		data_t s = state_parameters[state_param_fixed_dim];
+		delta = state_parameters[t];
+		s_t = sqrtf( s * s * delta );
+
+				uint32_t u1 = __random32(&rng_state[k*2]);
+				uint32_t u2 = __random32(&rng_state[k*2+1]);
+				data_t rn = approx(u1, u2);
+				//for (unsigned int q=0; q<theta_dim; q++){
+					*proposed_particle = *previous_particle + s_t * rn;
+				//}
+
+}
+
 data_t log_factorial(data_t_integers x){
 	switch(x){
 	    case 0 :
@@ -549,14 +566,16 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 	data_t rn_resampling, rn_particles_saved, weights_sum, rn;//, rn_array;
 	uint32_t index_saved_keep = 0;
 	uint32_t block, index;
+	data_t proposed_particle;
+	data_t previous_particle;
 
 	//transition related
-	data_t delta, s_t;
-	data_t s = state_parameters[state_param_fixed_dim];
+	//data_t delta, s_t;
+	//data_t s = state_parameters[state_param_fixed_dim];
 
 	//likelihood related
 	data_t s_o = obs_parameters_rand[0];
-	data_t particle_common, temp, temp2, temp3[obs_dim], p, log_lik_particle_max, weights_mean, sum1, sum2, sum[M_ti_int], log_lik_particle_max_keep;
+	data_t temp, temp2, temp3[obs_dim], p, log_lik_particle_max, weights_mean, sum1, sum2, sum[M_ti_int], log_lik_particle_max_keep;
 	data_t_integers n, x, n_minus_x;
 	data_t weights_chunk_sums[M_ti_int];
 	log_lik_particle_max = FP_inf_neg;
@@ -607,8 +626,7 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 		counter_4 = 0;
 
 
-		delta = state_parameters[t];
-		s_t = sqrtf( s * s * delta );
+
 
 		index_saved = 0;
 		index_saved_keep = 0;
@@ -624,19 +642,28 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 #pragma HLS LOOP_TRIPCOUNT min=128 max=128 avg=128
 			parallelism_loop: for (unsigned int k=0; k<M_ti_int; k++){
 
-				u1 = __random32(&rng_state[k*2]);
-				u2 = __random32(&rng_state[k*2+1]);
-				rn = approx(u1, u2);
-				particle_common = particles_temp[k*chunk_size_max + i] + s_t * rn;
-				particles[k*chunk_size_max + i] = particle_common;
+				//for (unsigned int q=0; q<theta_dim; q++){
+					//previous_particle[k*theta_dim + q] = particles_temp[k*chunk_size_max + i + q];
+				//}
+				previous_particle = particles_temp[k*chunk_size_max + i];
+				transition_density(&previous_particle, &proposed_particle, rng_state, k, t, chunk_size_max, state_parameters);
+				//transition_density(&particles_temp[k*chunk_size_max + i], &particles[k*chunk_size_max + i], rng_state, k, t, chunk_size_max, state_parameters);
+				//u1 = __random32(&rng_state[k*2]);
+				//u2 = __random32(&rng_state[k*2+1]);
+				//rn = approx(u1, u2);
+				//particle_common = particles_temp[k*chunk_size_max + i] + s_t * rn;
+
+				//for (unsigned int q=0; q<theta_dim; q++){
+				//	particles[k*chunk_size_max + i + q] = proposed_particle[q]; //particle_common;
+				//}
 
 				obs_parallelism_loop: for (unsigned int j=0; j<obs_dim; j++){
 
 					u3 = __random32(&rng_state[M_ti_int*2 + k*obs_dim*2 + j*2]);
 					u4 = __random32(&rng_state[M_ti_int*2 + k*obs_dim*2 + j*2 + 1]);
 					rn = approx(u3, u4);
-					temp = particle_common + s_o * rn;//rn[k*chunk_size_data + i*obs_dim_max_size + j]; // * PF_likelihood_rn[t*P*obs_dim + i*obs_dim + j];
-
+					//temp = particles[k*chunk_size_max + i] + s_o * rn;//rn[k*chunk_size_data + i*obs_dim_max_size + j]; // * PF_likelihood_rn[t*P*obs_dim + i*obs_dim + j];
+					temp = proposed_particle + s_o * rn;
 					if ( temp > FP_power_max ){
 						//temp2 = FP_inf_pos;
 						p = 1.0f;
