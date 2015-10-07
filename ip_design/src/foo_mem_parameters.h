@@ -26,16 +26,18 @@ const uint32_t state_dim = 1;
 const uint32_t obs_dim = 4;
 const uint32_t state_param_rand_dim = 1;
 const uint32_t obs_param_rand_dim = 1;
+const uint32_t state_param_fixed_dim_one_element = 1;
+const uint32_t obs_param_fixed_dim_one_element = 4;
 const uint32_t theta_dim = 2;//state_param_rand_dim + obs_param_rand_dim;
 const uint32_t prior_parameters_dim = 5;
 
 //other parameters - variable but with some maximum
 const uint32_t particles_max_size = 16384;
 const uint32_t state_count_max_size = 16384;
-const uint32_t state_param_fixed_dim = 1;
-const uint32_t state_param_fixed_dim_max_size = state_count_max_size*state_param_fixed_dim;
-const uint32_t obs_param_fixed_dim = obs_dim;
-const uint32_t obs_param_fixed_dim_max_size = state_count_max_size*obs_param_fixed_dim;
+//const uint32_t state_param_fixed_dim = 1;
+const uint32_t state_param_fixed_dim_max_size = state_count_max_size*state_param_fixed_dim_one_element;
+//const uint32_t obs_param_fixed_dim = obs_dim;
+const uint32_t obs_param_fixed_dim_max_size = state_count_max_size*obs_param_fixed_dim_one_element;
 const uint32_t state_param_dim_max_size = state_param_fixed_dim_max_size + state_param_rand_dim;
 const uint32_t obs_param_dim_max_size = obs_param_fixed_dim_max_size + obs_param_rand_dim; //2050; //fixed: n for all observations, random: 1
 const uint32_t data_dim_max_size = state_count_max_size * obs_dim; //*state_dim

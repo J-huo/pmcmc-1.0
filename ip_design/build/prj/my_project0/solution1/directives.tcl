@@ -40,3 +40,10 @@ set_directive_unroll "particle_filter/n_x_loop"
 set_directive_inline "transition_density"
 set_directive_array_partition -type complete -dim 1 "particle_filter" proposed_particle
 set_directive_array_partition -type complete -dim 1 "particle_filter" previous_particle
+set_directive_inline "observation_density"
+set_directive_array_partition -type complete -dim 1 "observation_density" temp3
+set_directive_array_partition -type complete -dim 1 "observation_density" n_full
+set_directive_array_partition -type complete -dim 1 "observation_density" x_full
+set_directive_array_partition -type complete -dim 1 "particle_filter" fetched_state_parameters_fixed
+set_directive_array_partition -type complete -dim 1 "particle_filter" fetched_obs_parameters_fixed
+set_directive_array_partition -type complete -dim 1 "particle_filter" fetched_data
