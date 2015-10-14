@@ -319,11 +319,11 @@ void foo	(	volatile data_t_memory *memory_inout,
     PRAGMA_HLS(HLS array_partition variable=init_particles block factor=M_ti dim=1)
     PRAGMA_HLS(HLS array_partition variable=weights block factor=M_ti dim=1)
     PRAGMA_HLS(HLS array_partition variable=log_lik_particle block factor=M_ti dim=1)
-    PRAGMA_HLS(HLS array_partition variable=data block factor=M_ti_data dim=1)
+    PRAGMA_HLS(HLS array_partition variable=data block factor=M_data dim=1)
     PRAGMA_HLS(HLS array_partition variable=particles_temp block factor=M_ti dim=1)
     PRAGMA_HLS(HLS array_partition variable=replication_factors block factor=M_ti dim=1)
     PRAGMA_HLS(HLS array_partition variable=resampling_indexes block factor=M_ti dim=1)
-    PRAGMA_HLS(HLS array_partition variable=obs_parameters_fixed block factor=M_ti_data dim=1)
+    PRAGMA_HLS(HLS array_partition variable=obs_parameters_fixed block factor=M_data dim=1)
 
 	//read dimension array and decode it
 	//ap_wait();

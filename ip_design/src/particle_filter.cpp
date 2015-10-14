@@ -553,24 +553,22 @@ void fetch_data_parameters(data_t *fetched_state_parameters_fixed, data_t *fetch
 
 
 
-void transition_density(data_t *previous_particle, data_t *proposed_particle, rng_state_t *rng_state, uint32_t k, uint32_t t, uint32_t chunk_size_max, data_t *fetched_state_parameters_fixed, data_t *fetched_state_parameters_rand){
+void transition_density(data_t *previous_particle, data_t *proposed_particle, rng_state_t *rng_state, uint32_t k, uint32_t t, data_t *fetched_state_parameters_fixed, data_t *fetched_state_parameters_rand){
 
-	//transition related
 		data_t delta, s_t;
 		data_t s = fetched_state_parameters_rand[0];
 		delta = fetched_state_parameters_fixed[0];
 		s_t = sqrtf( s * s * delta );
 
-				uint32_t u1 = __random32(&rng_state[k*2]);
-				uint32_t u2 = __random32(&rng_state[k*2+1]);
-				data_t rn = approx(u1, u2);
-				//for (unsigned int q=0; q<theta_dim; q++){
-					*proposed_particle = *previous_particle + s_t * rn;
-				//}
+		uint32_t u1 = __random32(&rng_state[k*2]);
+		uint32_t u2 = __random32(&rng_state[k*2+1]);
+		data_t rn = approx(u1, u2);
+		*proposed_particle = *previous_particle + s_t * rn;
+
 
 }
 
-void observation_density(data_t particle, rng_state_t *rng_state, uint32_t k, uint32_t t, uint32_t chunk_size_max, data_t *fetched_obs_parameters_fixed, data_t *fetched_obs_parameters_rand, data_t *fetched_data, data_t *sum, int *counter_1){
+void observation_density(data_t *particle, data_t *likelihood_value, rng_state_t *rng_state, uint32_t k, uint32_t t, data_t *fetched_obs_parameters_fixed, data_t *fetched_obs_parameters_rand, data_t *fetched_data, int *counter_1){
 
 
 		data_t temp, temp2, temp3[obs_dim], p, sum1, sum2;
@@ -588,8 +586,12 @@ void observation_density(data_t particle, rng_state_t *rng_state, uint32_t k, ui
 		//		x_full[l] = data[l*chunk_size_data_max + t];
 		//}
 
+		//for (unsigned int m=0; m<state_dim; m++){
+		data_t	particle_common = *particle;// + s_t * rn;
+		//}
 
-		data_t particle_common = particle;//s[k*chunk_size_max + i];// + s_t * rn;
+
+		//data_t particle_common = particle;//s[k*chunk_size_max + i];// + s_t * rn;
 
 		//for (unsigned int q=0; q<theta_dim; q++){
 		//	particles[k*chunk_size_max + i + q] = proposed_particle[q]; //particle_common;
@@ -659,7 +661,7 @@ void observation_density(data_t particle, rng_state_t *rng_state, uint32_t k, ui
 
 		sum1 = temp3[0] + temp3[1];
 		sum2 = temp3[2] + temp3[3];
-		sum[k] = sum1 + sum2;
+		*likelihood_value = sum1 + sum2;
 		//log_lik_particle[k*chunk_size_max + i] = sum1 + sum2;
 
 }
@@ -707,10 +709,10 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 	//likelihood related
 	//data_t s_o = obs_parameters_rand[0];
 	//data_t temp, temp2, temp3[obs_dim], p, log_lik_particle_max, weights_mean, sum1, sum2, sum[M_ti_int], log_lik_particle_max_keep;
-	data_t log_lik_particle_max, weights_mean, sum[M_ti_int], log_lik_particle_max_keep;
+	data_t log_lik_particle_max, weights_mean, likelihood_value[M_ti_int], log_lik_particle_max_keep;
 	//data_t_integers n, x, n_minus_x;
 	data_t weights_chunk_sums[M_ti_int];
-	data_t particle_obs;
+	//data_t particle_obs[state_dim];
 	log_lik_particle_max = FP_inf_neg;
 
 
@@ -772,7 +774,7 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 		fetch_data_parameters(fetched_state_parameters_fixed, fetched_state_parameters_rand, fetched_obs_parameters_fixed, fetched_obs_parameters_rand, fetched_data, t, state_parameters, obs_parameters_fixed, obs_parameters_rand, data, state_param_fixed_dim);
 
 
-		main_loop: for (unsigned int i=0; i<chunk_size_true; i++){
+		main_loop: for (unsigned int i=0; i<chunk_size_particles_true; i++){
 #pragma HLS LOOP_TRIPCOUNT min=128 max=128 avg=128
 			parallelism_loop: for (unsigned int k=0; k<M_ti_int; k++){
 
@@ -781,7 +783,7 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 				//}
 				//previous_particle = particles_temp[k*chunk_size_max + i];
 				//transition_density(previous_particle, proposed_particle, rng_state, k, t, chunk_size_max, state_parameters);
-				transition_density(&particles_temp[k*chunk_size_max + i], &particles[k*chunk_size_max + i], rng_state, k, t, chunk_size_max, fetched_state_parameters_fixed, fetched_state_parameters_rand);
+				transition_density(&particles_temp[k*chunk_size_max + i*state_dim], &particles[k*chunk_size_max + i*state_dim], rng_state, k, t, fetched_state_parameters_fixed, fetched_state_parameters_rand);
 				//u1 = __random32(&rng_state[k*2]);
 				//u2 = __random32(&rng_state[k*2+1]);
 				//rn = approx(u1, u2);
@@ -859,13 +861,14 @@ x = (data_t_integers)x_full[j];
 				sum[k] = sum1 + sum2;
 				//log_lik_particle[k*chunk_size_max + i] = sum1 + sum2;
 */
-				particle_obs = particles[k*chunk_size_max + i];// + s_t * rn;
+				//for (unsigned int m=0; m<state_dim; m++){
+				//	particle_obs[m] = particles[k*chunk_size_max + i*state_dim + m];// + s_t * rn;
+				//}
 
-
-				observation_density(particle_obs, rng_state, k, t, chunk_size_max, fetched_obs_parameters_fixed, fetched_obs_parameters_rand, fetched_data, sum, &counter_1);
+				observation_density(&particles[k*chunk_size_max + i*state_dim], &likelihood_value[k], rng_state, k, t, fetched_obs_parameters_fixed, fetched_obs_parameters_rand, fetched_data, &counter_1);
 
 				//check for NaN and saturate
-				if (!(sum[k] > FP_inf_neg)){
+				if (!(likelihood_value[k] > FP_inf_neg)){
 					log_lik_particle[k*chunk_size_particles_max + i] = FP_inf_neg;
 					#ifndef __SYNTHESIS__
 						//printf("Negative Infinite sub-loglikelihood\n");
@@ -882,7 +885,7 @@ x = (data_t_integers)x_full[j];
 				}
 				*/
 				else{
-					log_lik_particle[k*chunk_size_particles_max + i] = sum[k];
+					log_lik_particle[k*chunk_size_particles_max + i] = likelihood_value[k];
 				}
 
 
@@ -891,7 +894,7 @@ x = (data_t_integers)x_full[j];
 
 			#if M_ti == 1
 
-				log_lik_particle_max_keep = sum[0];
+				log_lik_particle_max_keep = likelihood_value[0];
 				index_saved_keep = 0*chunk_size_particles_max + i;
 
 				//if (i%2==0){
@@ -907,12 +910,12 @@ x = (data_t_integers)x_full[j];
 				//data_t log_lik_particle_max_temp[3];
 				//						uint32_t index_saved_temp[3];
 
-				if (sum[0] > sum[1]){
-					log_lik_particle_max_keep = sum[0];
+				if (likelihood_value[0] > likelihood_value[1]){
+					log_lik_particle_max_keep = likelihood_value[0];
 					index_saved_keep = 0*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_keep = sum[1];
+					log_lik_particle_max_keep = likelihood_value[1];
 					index_saved_keep = 1*chunk_size_particles_max + i;
 				}
 
@@ -929,21 +932,21 @@ x = (data_t_integers)x_full[j];
 				data_t log_lik_particle_max_temp[2];
 				uint32_t index_saved_temp[2];
 
-				if (sum[0] > sum[1]){
-					log_lik_particle_max_temp[0] = sum[0];
+				if (likelihood_value[0] > likelihood_value[1]){
+					log_lik_particle_max_temp[0] = likelihood_value[0];
 					index_saved_temp[0] = 0*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[0] = sum[1];
+					log_lik_particle_max_temp[0] = likelihood_value[1];
 					index_saved_temp[0] = 1*chunk_size_particles_max + i;
 				}
 
-				if (sum[2] > sum[3]){
-					log_lik_particle_max_temp[1] = sum[2];
+				if (likelihood_value[2] > likelihood_value[3]){
+					log_lik_particle_max_temp[1] = likelihood_value[2];
 					index_saved_temp[1] = 2*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[1] = sum[3];
+					log_lik_particle_max_temp[1] = likelihood_value[3];
 					index_saved_temp[1] = 3*chunk_size_particles_max + i;
 				}
 
@@ -971,21 +974,21 @@ x = (data_t_integers)x_full[j];
 				data_t log_lik_particle_max_temp[3];
 				uint32_t index_saved_temp[3];
 
-				if (sum[0] > sum[1]){
-					log_lik_particle_max_temp[0] = sum[0];
+				if (likelihood_value[0] > likelihood_value[1]){
+					log_lik_particle_max_temp[0] = likelihood_value[0];
 					index_saved_temp[0] = 0*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[0] = sum[1];
+					log_lik_particle_max_temp[0] = likelihood_value[1];
 					index_saved_temp[0] = 1*chunk_size_particles_max + i;
 				}
 
-				if (sum[2] > sum[3]){
-					log_lik_particle_max_temp[1] = sum[2];
+				if (likelihood_value[2] > likelihood_value[3]){
+					log_lik_particle_max_temp[1] = likelihood_value[2];
 					index_saved_temp[1] = 2*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[1] = sum[3];
+					log_lik_particle_max_temp[1] = likelihood_value[3];
 					index_saved_temp[1] = 3*chunk_size_particles_max + i;
 				}
 
@@ -1000,14 +1003,14 @@ x = (data_t_integers)x_full[j];
 					index_saved_temp[2] = index_saved_temp[1];
 				}
 
-				if (log_lik_particle_max_temp[2] > sum[4]){
+				if (log_lik_particle_max_temp[2] > likelihood_value[4]){
 					log_lik_particle_max_keep = log_lik_particle_max_temp[2];
 					index_saved_keep = index_saved_temp[2];
 					//log_lik_particle_max_temp[2] = log_lik_particle_max_temp[2];
 					//*index_saved[2] = *index_saved[2];
 				}
 				else{
-					log_lik_particle_max_keep = sum[4];
+					log_lik_particle_max_keep = likelihood_value[4];
 					index_saved_keep = 4*chunk_size_particles_max + i;
 				}
 
@@ -1024,39 +1027,39 @@ x = (data_t_integers)x_full[j];
 				data_t log_lik_particle_max_temp[6];
 				uint32_t index_saved_temp[6];
 
-				if (sum[0] > sum[1]){
-					log_lik_particle_max_temp[0] = sum[0];
+				if (likelihood_value[0] > likelihood_value[1]){
+					log_lik_particle_max_temp[0] = likelihood_value[0];
 					index_saved_temp[0] = 0*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[0] = sum[1];
+					log_lik_particle_max_temp[0] = likelihood_value[1];
 					index_saved_temp[0] = 1*chunk_size_particles_max + i;
 				}
 
-				if (sum[2] > sum[3]){
-					log_lik_particle_max_temp[1] = sum[2];
+				if (likelihood_value[2] > likelihood_value[3]){
+					log_lik_particle_max_temp[1] = likelihood_value[2];
 					index_saved_temp[1] = 2*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[1] = sum[3];
+					log_lik_particle_max_temp[1] = likelihood_value[3];
 					index_saved_temp[1] = 3*chunk_size_particles_max + i;
 				}
 
-				if (sum[4] > sum[5]){
-					log_lik_particle_max_temp[2] = sum[4];
+				if (likelihood_value[4] > likelihood_value[5]){
+					log_lik_particle_max_temp[2] = likelihood_value[4];
 					index_saved_temp[2] = 4*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[2] = sum[5];
+					log_lik_particle_max_temp[2] = likelihood_value[5];
 					index_saved_temp[2] = 5*chunk_size_particles_max + i;
 				}
 
-				if (sum[6] > sum[7]){
-					log_lik_particle_max_temp[3] = sum[6];
+				if (likelihood_value[6] > likelihood_value[7]){
+					log_lik_particle_max_temp[3] = likelihood_value[6];
 					index_saved_temp[3] = 6*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[3] = sum[7];
+					log_lik_particle_max_temp[3] = likelihood_value[7];
 					index_saved_temp[3] = 7*chunk_size_particles_max + i;
 				}
 
@@ -1107,44 +1110,44 @@ x = (data_t_integers)x_full[j];
 				data_t log_lik_particle_max_temp[8];
 				uint32_t index_saved_temp[8];
 
-				if (sum[0] > sum[1]){
-					log_lik_particle_max_temp[0] = sum[0];
+				if (likelihood_value[0] > likelihood_value[1]){
+					log_lik_particle_max_temp[0] = likelihood_value[0];
 					index_saved_temp[0] = 0*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[0] = sum[1];
+					log_lik_particle_max_temp[0] = likelihood_value[1];
 					index_saved_temp[0] = 1*chunk_size_particles_max + i;
 				}
 
-				if (sum[2] > sum[3]){
-					log_lik_particle_max_temp[1] = sum[2];
+				if (likelihood_value[2] > likelihood_value[3]){
+					log_lik_particle_max_temp[1] = likelihood_value[2];
 					index_saved_temp[1] = 2*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[1] = sum[3];
+					log_lik_particle_max_temp[1] = likelihood_value[3];
 					index_saved_temp[1] = 3*chunk_size_particles_max + i;
 				}
 
-				if (sum[4] > sum[5]){
-					log_lik_particle_max_temp[2] = sum[4];
+				if (likelihood_value[4] > likelihood_value[5]){
+					log_lik_particle_max_temp[2] = likelihood_value[4];
 					index_saved_temp[2] = 4*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[2] = sum[5];
+					log_lik_particle_max_temp[2] = likelihood_value[5];
 					index_saved_temp[2] = 5*chunk_size_particles_max + i;
 				}
 
-				if (sum[6] > sum[7]){
-					log_lik_particle_max_temp[3] = sum[6];
+				if (likelihood_value[6] > likelihood_value[7]){
+					log_lik_particle_max_temp[3] = likelihood_value[6];
 					index_saved_temp[3] = 6*chunk_size_particles_max + i;
 				}
 				else{
-					log_lik_particle_max_temp[3] = sum[7];
+					log_lik_particle_max_temp[3] = likelihood_value[7];
 					index_saved_temp[3] = 7*chunk_size_particles_max + i;
 				}
 
-				if (sum[8] > sum[9]){
-					log_lik_particle_max_temp[4] = sum[8];
+				if (likelihood_value[8] > likelihood_value[9]){
+					log_lik_particle_max_temp[4] = likelihood_value[8];
 					index_saved_temp[4] = 8*chunk_size_particles_max + i;
 				}
 				else{
@@ -1212,7 +1215,7 @@ x = (data_t_integers)x_full[j];
 		////////////////////////SUMS AND MEAN LIKELIHOOD PART/////////////////////////////////////
 
 		weights_sum = 0.0f;
-			//block_index = 0;
+			//block_inlikelihood_value = 0;
 
 		chunk_sums_init_loop: for (unsigned int l=0;l<M_ti_int;l++){
 			weights_chunk_sums[l] = 0.0f;
