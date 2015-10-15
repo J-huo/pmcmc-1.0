@@ -18,6 +18,7 @@
 #define M_data 4
 
 const uint32_t M_ti_int = (uint32_t)M_ti;
+const uint32_t M_data_int = (uint32_t)M_data;
 const uint32_t seeds_dim = 30;
 const uint32_t rng_init_cycles = 1000;
 
@@ -34,6 +35,11 @@ const uint32_t theta_dim = state_param_rand_dim + obs_param_rand_dim;
 const uint32_t state_param_fixed_dim_one_element = 1;
 const uint32_t prior_parameters_dim = 5;
 
+//rng constants
+const uint32_t trans_nrnd = 1;
+const uint32_t trans_urnd = 0;
+const uint32_t obs_nrnd = 4;
+const uint32_t obs_urnd = 0;
 
 //maximum problem sizes
 const uint32_t particles_max_size = 16384;
@@ -58,6 +64,7 @@ const uint32_t data_dim_max_size = state_count_max_size * obs_dim; //*state_dim
 const uint32_t chunk_size_max = (particles_max_size*state_dim)/(M_ti_int); //block partitioning
 const uint32_t chunk_size_particles_max = (particles_max_size)/(M_ti_int); //block partitioning
 const uint32_t chunk_size_data_max = (data_dim_max_size)/(obs_dim); //cyclic partitioning
+const uint32_t chunk_size_obs_param_fixed_max = (obs_param_fixed_dim_max_size)/(obs_param_fixed_dim_one_element); //cyclic partitioning
 
 
 
@@ -95,3 +102,4 @@ const ap_uint<WORDLENGTH_FIX_REDUCED> mask_1_reduced_pre = 0x1000;
 const uint32_t mask_ones = 0xFFFFFFFF;
 
 const uint32_t const_offset = 0;
+;
