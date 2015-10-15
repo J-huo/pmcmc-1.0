@@ -37,7 +37,7 @@
 void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t P, data_t *init_particles,
 		data_t *particles, data_t *particles_temp, data_t *log_lik_particle, data_t *weights, data_t *weights_partial_sums, uint_resampling *resampling_indexes, uint_resampling *replication_factors,
 		uint32_t state_count, uint32_t state_dim, uint32_t obs_dim, uint32_t state_param_fixed_dim, uint32_t state_param_rand_dim,
-		uint32_t obs_param_fixed_dim, uint32_t obs_param_rand_dim, data_t *state_parameters,
+		uint32_t obs_param_fixed_dim_one_element, uint32_t obs_param_fixed_dim, uint32_t obs_param_rand_dim, data_t *state_parameters,
 		data_t *obs_parameters_fixed, data_t *obs_parameters_rand, data_t *data, rng_state_t *rng_state, uint32_t seeds_dim);
 
 
@@ -119,7 +119,7 @@ void mcmc_iteration(data_t *current_mcmc_state, data_t *proposed_mcmc_state, dat
 		data_t *particles, data_t *particles_temp, data_t *log_lik_particle, data_t *weights, data_t *weights_partial_sums,
 		uint_resampling *resampling_indexes, uint_resampling *replication_factors,
 		uint32_t state_count, uint32_t state_dim, uint32_t obs_dim, uint32_t state_param_fixed_dim, uint32_t state_param_rand_dim,
-		uint32_t obs_param_fixed_dim, uint32_t obs_param_rand_dim, data_t *state_parameters,
+		uint32_t obs_param_fixed_dim_one_element, uint32_t obs_param_fixed_dim, uint32_t obs_param_rand_dim, data_t *state_parameters,
 		data_t *obs_parameters_fixed, data_t *obs_parameters_rand, data_t *data, rng_state_t *rng_state, uint32_t seeds_dim){
 
 	uint32_t u1=0, u2=0;
@@ -161,7 +161,7 @@ void mcmc_iteration(data_t *current_mcmc_state, data_t *proposed_mcmc_state, dat
 			//likelihood
 			pf_call_main: particle_filter(&proposed_mcmc_state[theta_dim], &proposed_mcmc_state[theta_dim+3], P, init_particles,
 						particles, particles_temp, log_lik_particle, weights, weights_partial_sums, resampling_indexes, replication_factors, state_count, state_dim, obs_dim, state_param_fixed_dim,
-						state_param_rand_dim, obs_param_fixed_dim, obs_param_rand_dim,
+						state_param_rand_dim, obs_param_fixed_dim_one_element, obs_param_fixed_dim, obs_param_rand_dim,
 						state_parameters, obs_parameters_fixed, obs_parameters_rand, data, rng_state, seeds_dim);
 			/*
 					saturation_loop: for (unsigned int i=0;i<theta_dim;i++){
@@ -337,9 +337,10 @@ void foo	(	volatile data_t_memory *memory_inout,
 	uint32_t state_param_fixed_1 = (uint32_t)dimensions[4];
 	uint32_t state_param_fixed_dim = state_count*state_dim;
 	uint32_t state_param_rand_dim_1 = (uint32_t)dimensions[5];
-	uint32_t obs_dim_1 = (uint32_t)dimensions[6];
-	uint32_t obs_param_fixed_dim_1 = (uint32_t)dimensions[7];
-	uint32_t obs_param_fixed_dim = obs_dim * state_count;
+	uint32_t obs_dim = (uint32_t)dimensions[6];
+	//uint32_t obs_param_fixed_dim_1 = (uint32_t)dimensions[7];
+	uint32_t obs_param_fixed_dim_one_element = (uint32_t)dimensions[7];
+	uint32_t obs_param_fixed_dim = obs_param_fixed_dim_one_element * state_count;
 	uint32_t obs_param_rand_dim_1 = (uint32_t)dimensions[8];
 	uint32_t theta_dim_1 = (uint32_t)dimensions[9];
 	uint32_t seeds_dim_1 = (uint32_t)dimensions[10];
@@ -428,7 +429,7 @@ void foo	(	volatile data_t_memory *memory_inout,
 		mcmc_iteration( current_mcmc_state, proposed_mcmc_state, current_mcmc_state_exp, proposed_mcmc_state_exp, j, initial_theta, &u, &u_comp, rn_prop, cov, &acc, prior_parameters, P, init_particles,
 						particles, particles_temp, log_lik_particle, weights, weights_partial_sums, resampling_indexes, replication_factors,
 						state_count, state_dim, obs_dim, state_param_fixed_dim, state_param_rand_dim,
-						obs_param_fixed_dim, obs_param_rand_dim, state_parameters,
+						obs_param_fixed_dim_one_element, obs_param_fixed_dim, obs_param_rand_dim, state_parameters,
 						obs_parameters_fixed, obs_parameters_rand, data, rng_state, seeds_dim);
 
 				//ap_wait();

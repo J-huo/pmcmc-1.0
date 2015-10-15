@@ -47,3 +47,4 @@ set_directive_array_partition -type complete -dim 1 "observation_density" x_full
 set_directive_array_partition -type complete -dim 1 "particle_filter" fetched_state_parameters_fixed
 set_directive_array_partition -type complete -dim 1 "particle_filter" fetched_obs_parameters_fixed
 set_directive_array_partition -type complete -dim 1 "particle_filter" fetched_data
+set_directive_array_partition -type complete -dim 1 "particle_filter" intermediate

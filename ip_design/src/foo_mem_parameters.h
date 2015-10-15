@@ -15,10 +15,16 @@
 #define M_ti 2
 #define M_resampling M_ti
 #define data_parallelism 1
+
+#if data_parallelism
 #define M_data 4
+#else
+#define M_data 1
+#endif
 
 const uint32_t M_ti_int = (uint32_t)M_ti;
-const uint32_t seeds_dim = 30;
+const uint32_t M_data_int = (uint32_t)M_data;
+const uint32_t seeds_dim = 60;
 const uint32_t rng_init_cycles = 1000;
 
 #define PRAGMA_SUB(x) _Pragma (#x)
@@ -34,34 +40,26 @@ const uint32_t theta_dim = state_param_rand_dim + obs_param_rand_dim;
 const uint32_t state_param_fixed_dim_one_element = 1;
 const uint32_t prior_parameters_dim = 5;
 
-
 //maximum problem sizes
 const uint32_t particles_max_size = 16384;
 const uint32_t state_count_max_size = 16384;
-
+const uint32_t obs_dim_max_size = 4;
+const uint32_t obs_param_fixed_dim_one_element_max_size = 4;
 
 //set based on model parameters and maximum problem sizes (do not change)
-//const uint32_t state_param_fixed_dim = 1;
 const uint32_t state_param_fixed_dim_max_size = state_count_max_size*state_param_fixed_dim_one_element;
 const uint32_t state_param_dim_max_size = state_param_fixed_dim_max_size + state_param_rand_dim;
-//const uint32_t obs_param_fixed_dim = obs_dim;
-
-
-
-//CHANGE???
-const uint32_t obs_dim = 4;
-const uint32_t obs_param_fixed_dim_one_element = 4;
-const uint32_t obs_param_fixed_dim_max_size = state_count_max_size*obs_param_fixed_dim_one_element;
+const uint32_t obs_param_fixed_dim_max_size = state_count_max_size*obs_param_fixed_dim_one_element_max_size;
 const uint32_t obs_param_dim_max_size = obs_param_fixed_dim_max_size + obs_param_rand_dim; //2050; //fixed: n for all observations, random: 1
-const uint32_t data_dim_max_size = state_count_max_size * obs_dim; //*state_dim
+const uint32_t data_dim_max_size = state_count_max_size * obs_dim_max_size; //*state_dim
 
+//chunk sizes (do not change)
 const uint32_t chunk_size_max = (particles_max_size*state_dim)/(M_ti_int); //block partitioning
 const uint32_t chunk_size_particles_max = (particles_max_size)/(M_ti_int); //block partitioning
-const uint32_t chunk_size_data_max = (data_dim_max_size)/(obs_dim); //cyclic partitioning
+const uint32_t chunk_size_obs_param_fixed_max = (obs_param_fixed_dim_max_size)/(obs_param_fixed_dim_one_element_max_size); //cyclic partitioning
+const uint32_t chunk_size_data_max = (data_dim_max_size)/(obs_dim_max_size); //cyclic partitioning
 
-
-
-//constant values
+//constant values related to floating point calculations
 const data_t FP_inf_neg = -1e30;
 const data_t FP_inf_pos = 1e30;
 const data_t FP_power_min = -68.0f;
