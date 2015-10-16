@@ -552,6 +552,7 @@ void fetch_data_parameters(data_t *fetched_state_parameters_fixed, data_t *fetch
 
 void normal_rnd_trans(data_t *rn, rng_state_t *rng_state, uint32_t k){
 
+	#if trans_nrnd>0
 		uint32_t u1;
 		uint32_t u2;
 		for (uint32_t i=0;i<trans_nrnd;i++){
@@ -561,11 +562,13 @@ void normal_rnd_trans(data_t *rn, rng_state_t *rng_state, uint32_t k){
 			u2 = __random32(&rng_state[k*trans_nrnd*2 + i*2+1]);
 			rn[i] = approx(u1, u2);
 		}
-
+	#endif
+		
 }
 
 void normal_rnd_obs(data_t *rn, rng_state_t *rng_state, uint32_t k){
-
+	
+	#if obs_nrnd>0
 		uint32_t u1;
 		uint32_t u2;
 		for (uint32_t i=0;i<obs_nrnd;i++){
@@ -573,27 +576,29 @@ void normal_rnd_obs(data_t *rn, rng_state_t *rng_state, uint32_t k){
 			u2 = __random32(&rng_state[trans_nrnd*M_ti_int*2 + k*obs_nrnd*2 + i*2 + 1]);
 			rn[i] = approx(u1, u2);
 		}
-
+	#endif
 }
 
 void uni_rnd_trans(data_t *rn, rng_state_t *rng_state, uint32_t k){
 
+	#if trans_urnd>0
 		uint32_t u1;
 		for (uint32_t i=0;i<trans_urnd;i++){
 			u1 = __random32(&rng_state[trans_nrnd*M_ti_int*2 + obs_nrnd*M_ti_int*2 + k*trans_urnd + i]);
 			rn[i] = (data_t)(u1/4294967296.0f);
 		}
-
+	#endif
 }
 
 void uni_rnd_obs(data_t *rn, rng_state_t *rng_state, uint32_t k){
-
+	
+	#if obs_urnd>0
 		uint32_t u1;
 		for (uint32_t i=0;i<obs_urnd;i++){
 			u1 = __random32(&rng_state[trans_nrnd*M_ti_int*2 + obs_nrnd*M_ti_int*2 + trans_urnd*M_ti_int + k*obs_urnd + i]);
 			rn[i] = (data_t)(u1/4294967296.0f);
 		}
-
+	#endif
 }
 
 void transition_density(data_t *previous_particle, data_t *proposed_particle, rng_state_t *rng_state, uint32_t k, uint32_t t, data_t *state_parameters_fixed, data_t *state_parameters_rand, uint32_t stage){
