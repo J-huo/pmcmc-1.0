@@ -14,11 +14,11 @@
 
 #define M_ti 2
 #define M_resampling M_ti
-#define data_parallelism 1
-#define M_data 4
+//#define data_parallelism 1
+//#define M_data 4
 
 const uint32_t M_ti_int = (uint32_t)M_ti;
-const uint32_t M_data_int = (uint32_t)M_data;
+//const uint32_t M_data_int = (uint32_t)M_data;
 const uint32_t seeds_dim = 30;
 const uint32_t rng_init_cycles = 1000;
 
