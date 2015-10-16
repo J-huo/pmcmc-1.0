@@ -1200,15 +1200,19 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 		//////////////////////////////////////////////////////////////
 		/////////////////RESAMPLING///////////////////////////////////
 
-		u5 = __random32(&rng_state[seeds_dim-1]);//trans_nrnd*M_ti_int*2 + obs_nrnd*M_ti_int*2 + trans_urnd*M_ti_int + k*obs_urnd + i
-		u6 = __random32(&rng_state[seeds_dim-1]);
+		//generate random numbers for 1) use inside resampling, 2) selection of random particle
+		u5 = __random32(&rng_state[trans_nrnd*M_ti_int*2 + obs_nrnd*M_ti_int*2 + trans_urnd*M_ti_int + obs_urnd*M_ti_int]);//trans_nrnd*M_ti_int*2 + obs_nrnd*M_ti_int*2 + trans_urnd*M_ti_int + k*obs_urnd + i
+		u6 = __random32(&rng_state[trans_nrnd*M_ti_int*2 + obs_nrnd*M_ti_int*2 + trans_urnd*M_ti_int + obs_urnd*M_ti_int]);
 		rn_particles_saved = (data_t)(u5/4294967296.0f);
 		rn_resampling = (data_t)(u6/4294967296.0f);
 		rn_resampling_fixed = (data_t_fixed)rn_resampling;
 
 		U[0] = rn_resampling_fixed;
 
+		//initialization of U numbers (see RSR paper)
 		U_init_loop: for (unsigned int i=1; i<M_ti_int; i++){
+
+			//conversion to fixed point for reduced latency
 			r = (data_t_fixed)((P*weights_partial_sums[i])/weights_sum);
 			temp_res_1 = r - rn_resampling_fixed;
 			if (temp_res_1 > 0){
@@ -1221,13 +1225,16 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 
 
 		#ifndef __SYNTHESIS__
-		uint_resampling sum_test = (uint_resampling)0;
+			uint_resampling sum_test = (uint_resampling)0;
 		#endif
 
+		//main resampling loop --> computes replication counts for all particles
 		resampling_main_loop: for (uint32_t j=0; j<chunk_size_particles_true; j++){
-#pragma HLS LOOP_TRIPCOUNT min=128 max=128 avg=128
+			#pragma HLS LOOP_TRIPCOUNT min=128 max=128 avg=128
+
 			resampling_parallelism_loop: for (uint32_t k=0; k<M_ti_int; k++){
 
+				//conversion to fixed point for reduced latency
 				temp_res = (data_t_fixed)((P*weights[k*chunk_size_particles_max+j]/weights_sum));
 				fixed_point:{
 					fact = temp_res - U[k];
@@ -1242,6 +1249,7 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 
 				}
 
+				//number of replications for this particle
 				replication_factors[k*chunk_size_particles_max+j] = rep.to_uint();
 				#ifndef __SYNTHESIS__
 				sum_test += replication_factors[k*chunk_size_particles_max+j];
@@ -1257,17 +1265,20 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 		}
 		#endif
 
-		//update particle set
-
 		block_replicated = 0;
 		index_replicated = -state_dim;
 
+		//update particle set using two particle memories
 		resampling_1st_update_loop: for(uint32_t k=0; k<M_ti_int; k++){
+
 			resampling_1st_update_inner_loop: for(uint32_t i=0; i<chunk_size_particles_true; i++){
-#pragma HLS LOOP_TRIPCOUNT min=128 max=128 avg=128
+
+				#pragma HLS LOOP_TRIPCOUNT min=128 max=128 avg=128
+
+				//number of replications
 				o = (uint32_t)replication_factors[k*chunk_size_particles_max + i];
 
-				//replication_factors_outer_loop:for(uint32_t i=0; i<state_dim; i++){
+					//loop with variable bound
 					replication_factors_inner_loop: for (uint32_t j=0; j<o; j++){
 						#pragma HLS LOOP_TRIPCOUNT min=1 max=1 avg=1
 
@@ -1281,9 +1292,7 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 							particles_temp[block_replicated*chunk_size_max + index_replicated + l]=particles[k*chunk_size_max + i*state_dim + l];
 						}
 					}
-				//}
 
-				//replicated += o;
 			}
 
 		}
@@ -1292,21 +1301,23 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 
 		//choose random particle from time step t
 		index_saved = (uint32_t)floorf(rn_particles_saved * P);
-
 		block = index_saved / chunk_size_particles_true;
 		index = index_saved % chunk_size_particles_true;
-		particles_saved_main_loop: for (unsigned int i = 0; i < state_dim; i++)
+		particles_saved_main_loop: for (unsigned int i = 0; i < state_dim; i++){
 					particles_saved_out[t*state_dim + i] = particles_temp[block*chunk_size_max + index*state_dim + i];
+		}
 
 
 
-	}//end of time loop
+	}//end of time_loop
+
 
 	#ifndef __SYNTHESIS__
 		//printf("Counter 5: %d\n", counter_5);
 		//printf("Counter 6: %d\n", counter_6);
 	#endif
 
+	//check for errors in estimated likelihood
 	if (!(*log_lik_out >= FP_inf_neg)){
 		*log_lik_out = FP_inf_neg;
 		#ifndef __SYNTHESIS__
