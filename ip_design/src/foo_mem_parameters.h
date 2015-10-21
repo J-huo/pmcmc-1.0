@@ -1,3 +1,6 @@
+#ifndef MEM_H
+#define MEM_H
+
 #include <stdint.h>
 #include <cstdlib>
 #include "ap_int.h"
@@ -7,6 +10,7 @@
 //#include "systemc.h"
 
 #define MEM_CPY 1 // use only for simulation
+#define DBG 1 // use only for simulation
 #define PRAGMA_SUB(x) _Pragma (#x)
 #define PRAGMA_HLS(x) PRAGMA_SUB(x)
 
@@ -14,21 +18,15 @@
 //Static parameters set by user (set before compilation)/////////////////////////////////////////////////
 
 //SSM parameters
-const uint32_t state_dim = 1;
-const uint32_t state_param_fixed_dim_one_element = 1;
-const uint32_t state_param_rand_dim = 1;
-const uint32_t obs_dim = 4;
-const uint32_t obs_param_fixed_dim_one_element = 4;
-const uint32_t obs_param_rand_dim = 1;
+#define state_dim_def 1
+#define state_param_fixed_dim_one_element_def 1
+#define state_param_rand_dim_def 1
+#define obs_dim_def 4
+#define obs_param_fixed_dim_one_element_def 4
+#define obs_param_rand_dim_def 1
 
 //prior parameters (number of constants)
 const uint32_t prior_parameters_dim = 5;
-
-//numbers of random values needed
-const uint32_t trans_nrnd = 1;
-const uint32_t trans_urnd = 0;
-const uint32_t obs_nrnd = 4;
-const uint32_t obs_urnd = 0;
 
 //maximum problem sizes
 const uint32_t particles_max_size = 16384; //do not set to more than 64K
@@ -37,6 +35,12 @@ const uint32_t state_count_max_size = 16384;
 //architecture parallelism
 #define M_ti 2
 const uint32_t M_ti_int = (uint32_t)M_ti;
+
+//numbers of random values needed
+#define trans_nrnd_def 1
+#define trans_urnd_def 0
+#define obs_nrnd_def 4
+#define obs_urnd_def 0
 
 //RNG initialization cycles
 const uint32_t rng_init_cycles = 1000;
@@ -49,6 +53,14 @@ const data_t FP_power_max = 68.0f;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //(DO NOT CHANGE) Static parameters set based on previous parameters ////////////////////////////////////
+
+//SSM parameters
+const uint32_t state_dim = (uint32_t)state_dim_def;
+const uint32_t state_param_fixed_dim_one_element = (uint32_t)state_param_fixed_dim_one_element_def;
+const uint32_t state_param_rand_dim = (uint32_t)state_param_rand_dim_def;
+const uint32_t obs_dim = (uint32_t)obs_dim_def;
+const uint32_t obs_param_fixed_dim_one_element = (uint32_t)obs_param_fixed_dim_one_element_def;
+const uint32_t obs_param_rand_dim = (uint32_t)obs_param_rand_dim_def;
 
 //dimension of theta
 const uint32_t theta_dim = state_param_rand_dim + obs_param_rand_dim;
@@ -65,6 +77,12 @@ const uint32_t chunk_size_max = (particles_max_size*state_dim)/(M_ti_int); //blo
 const uint32_t chunk_size_particles_max = (particles_max_size)/(M_ti_int); //block partitioning
 const uint32_t chunk_size_data_max = (data_dim_max_size)/(obs_dim); //cyclic partitioning
 const uint32_t chunk_size_obs_param_fixed_max = (obs_param_fixed_dim_max_size)/(obs_param_fixed_dim_one_element); //cyclic partitioning
+
+//numbers of random values needed
+const uint32_t trans_nrnd = (uint32_t)trans_nrnd_def;
+const uint32_t trans_urnd = (uint32_t)trans_urnd_def;
+const uint32_t obs_nrnd = (uint32_t)obs_nrnd_def;
+const uint32_t obs_urnd = (uint32_t)obs_urnd_def;
 
 //RNGs seed dimension
 const uint32_t seeds_dim = trans_nrnd*M_ti_int*2 + obs_nrnd*M_ti_int*2 + trans_urnd*M_ti_int + obs_urnd*M_ti_int + 1 + 1;
@@ -102,3 +120,5 @@ const ap_uint<WORDLENGTH_FIX_REDUCED> mask_1_reduced_pre = 0x1000;
 const uint32_t mask_ones = 0xFFFFFFFF;
 
 const uint32_t const_offset = 0;
+
+#endif

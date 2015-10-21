@@ -25,6 +25,8 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 *
 */
+#ifndef DATA_H
+#define DATA_H
 
 
 #include <vector>
@@ -64,4 +66,6 @@ const unsigned N=115000000; //input and output vector length
 	typedef float data_t;
 	typedef float data_t_interface;
 	typedef float data_t_memory;
+#endif
+
 #endif

@@ -80,13 +80,46 @@ proc csim {input_vectors project_name FPGA_name fclk} {
 	set filename [format "../../src/foo_mem_parameters.h"] 
 	add_files $filename
 	unset filename
-	set filename [format "../../src/gauss.h"] 
+	set filename [format "../../src/rngs.h"] 
 	add_files $filename
 	unset filename
-	set filename [format "../../src/gauss.cpp"] 
+	set filename [format "../../src/rngs.cpp"] 
+	add_files $filename
+	unset filename	
+	set filename [format "../../src/fetch.h"] 
+	add_files $filename
+	unset filename
+	set filename [format "../../src/fetch.cpp"] 
+	add_files $filename
+	unset filename	
+	set filename [format "../../src/transition_density.h"] 
+	add_files $filename
+	unset filename
+	set filename [format "../../src/transition_density.cpp"] 
+	add_files $filename
+	unset filename	
+	set filename [format "../../src/observation_density.h"] 
+	add_files $filename
+	unset filename
+	set filename [format "../../src/observation_density.cpp"] 
 	add_files $filename
 	unset filename	
 	set filename [format "../../src/particle_filter.cpp"] 
+	add_files $filename
+	unset filename
+	set filename [format "../../src/prior.h"] 
+	add_files $filename
+	unset filename
+	set filename [format "../../src/prior.cpp"] 
+	add_files $filename
+	unset filename	
+	set filename [format "../../src/mcmc_iteration.h"] 
+	add_files $filename
+	unset filename
+	set filename [format "../../src/mcmc_iteration.cpp"] 
+	add_files $filename
+	unset filename	
+	set filename [format "../../src/foo.h"] 
 	add_files $filename
 	unset filename
 	set filename [format "../../src/foo.cpp"] 
@@ -152,9 +185,9 @@ file mkdir ip_design/test_csim/results
 
 # #############################    
 # Update foo_data.h header file
-set file "make_template/make_foo_data_h.tcl"
-src $file $max_vector_length $float_fix $bits_word_integer_length $bits_word_fraction_length
-unset file
+#set file "make_template/make_foo_data_h.tcl"
+#src $file $max_vector_length $float_fix $bits_word_integer_length $bits_word_fraction_length
+#unset file
 
 
 # #############################  
