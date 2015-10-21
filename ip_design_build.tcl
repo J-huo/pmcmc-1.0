@@ -148,6 +148,9 @@ set filename [format "../../src/foo_data.h"]
 	set filename [format "../../src/mcmc_iteration.cpp"] 
 	add_files $filename
 	unset filename	
+	set filename [format "../../src/foo.h"] 
+	add_files $filename
+	unset filename
 	set filename [format "../../src/foo.cpp"] 
 	add_files $filename
 	unset filename
