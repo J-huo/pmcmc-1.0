@@ -1,10 +1,6 @@
-
 #include "prior.h"
 
-
-/* natural log of the gamma function
-   gammln as implemented in the
- * first edition of Numerical Recipes in C */
+//natural log of the gamma function
 data_t gammln(data_t xx)
 {
     data_t x, tmp, ser;
@@ -24,7 +20,7 @@ data_t gammln(data_t xx)
     return -tmp+logf(2.5066282746310005f*ser);
 }
 
-// natural log of the gamma distribution PDF
+//natural log of the gamma distribution PDF
 data_t gammalog(data_t x, data_t a, data_t b)
 {
     if (x < 0.0f || a < 0.0f || b <= 0.0f){
@@ -43,23 +39,17 @@ data_t gammalog(data_t x, data_t a, data_t b)
         return -x / b + (a - 1.0f) * logf(x) - a * logf(b) - gammln(a);
 }
 
+//USED-DEFINED
+//computes the (log-)sum of all prior densities (has to include all MCMC parameters)
 data_t log_prior(data_t *theta, data_t *prior_parameters){
 
-	if ( ((uint32_t)prior_parameters[0]) == 0 ){
-		return 0.0f;
-	}
-	else if ( ((uint32_t)prior_parameters[0]) == 1 ){
-		data_t prior_value = 0.0f;
-		for (int i=0; i<theta_dim; i++){
-			prior_value += gammalog(theta[i],prior_parameters[1+i*2],prior_parameters[1+i*2+1]);
-		}
-		return prior_value;
+	data_t prior_sum = 0.0f;
 
-	}
-	else{
-		return FP_inf_neg;
+	for (int i=0; i<theta_dim; i++){
+		//in this case, all priors are gamma priors (each with different hyper-parameters)
+		prior_sum += gammalog(theta[i],prior_parameters[i*2],prior_parameters[i*2+1]);
 	}
 
-
+	return prior_sum;
 
 }

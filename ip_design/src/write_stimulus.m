@@ -46,9 +46,9 @@ obs_dim=4; %observation dimension, number of iid data
 
 %PF
 strain = 1;
-state_count=1000; %T --> number of states
+state_count=256; %T --> number of states
 N=1024; %number of particles
-sigma_t=9; %common unknown parameter for state transitions
+sigma_t=2; %common unknown parameter for state transitions
 sigma_o=0.2; %unknown parameter for observation equation
 init_state_parameters=[0 1]; %mean and variance of initial particle set
 
@@ -95,19 +95,18 @@ else
 end
 
 %MCMC
-iterations = 100; %number of MCMC iterations
+iterations = 300; %number of MCMC iterations
 initial_theta = [9, 1];%[3.2680 1.3049];%[8, 3]; % initial theta values
 fix_cov_std=[0.04 0.04];%0.05/theta_dim;
 ad_cov_std=[0.1 0.1];%0.05/theta_dim;%0.056644;
-prior_type = 1;
-prior_parameters = [prior_type 1.2 100 1 100];
+prior_parameters = [1.2 100 1 100 0];
 
     
 %FPGA architecture parameters
 M=2;
 particles_max_size = 16384;
 state_count_max_size = 16384;
-seeds_dim = 30;
+seeds_dim = 4 + 16 + 1 + 1;
 rng_init_cycles = 1000; 
 chunk = 30000;
 

@@ -1,31 +1,3 @@
-/*
-* This file is part of ICL SDK4FPGA.
-*
-* ICL SDK4FPGA -- A framework to optimal design, easy validate
-* and fast prototype mathematical algorithms on FPGA based systems.
-* Copyright (C) 2014 by Andrea Suardi, Imperial College London.
-* Supported by the EPSRC Impact Acceleration grant number EP/K503733/1
-*
-* ICL SDK4FPGA is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 3 of the License, or (at your option) any later version.
-*
-* ICL SDK4FPGA is distributed in the hope that it will help researchers and engineers
-* to build their own mathematical algorithms into FPGA.
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-* It is the user's responsibility in assessing the correctness of the algorithm
-* and software implementation before putting it to use in their own research
-* or exploiting the results commercially.
-* Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with ICL SDK4FPGA; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-*
-*/
-
 #include "foo.h"
 //using namespace hls;
 
@@ -42,31 +14,26 @@ void foo	(	volatile data_t_memory *memory_inout,
 
 	//Foo function return is assigned to an AXI4-slave interface named BUS_A
 	#pragma HLS RESOURCE variable=return core=AXI4LiteS metadata="-bus_bundle BUS_A"
-
 	
 	#pragma HLS INTERFACE ap_none register     port=byte_inputs_in_offset
 	#pragma HLS RESOURCE core=AXI4LiteS    variable=byte_inputs_in_offset metadata="-bus_bundle BUS_A"
 
 	#pragma HLS INTERFACE ap_none register     port=byte_outputs_out_offset
 	#pragma HLS RESOURCE core=AXI4LiteS    variable=byte_outputs_out_offset metadata="-bus_bundle BUS_A"
-
 	
 
 	#ifndef __SYNTHESIS__
-	//Any system calls which manage memory allocation within the system, for example malloc(), alloc() and free(), must be removed from the design code prior to synthesis. 
+	//software simulation only
 
 	// input BRAMS
 	data_t *dimensions = (data_t *)malloc(15 * sizeof (data_t));
     data_t *initial_theta = (data_t *)malloc(theta_dim * sizeof (data_t));
     data_t *cov = (data_t *)malloc(theta_dim * sizeof (data_t));
     data_t *prior_parameters = (data_t *)malloc(prior_parameters_dim * sizeof (data_t));
-    //data_t *MCMC_proposal_rn = (data_t *)malloc(theta_dim * sizeof (data_t));
-    //data_t *MCMC_update_rn = (data_t *)malloc(sizeof (data_t));
     data_t *init_particles = (data_t *)malloc(particles_max_size * state_dim * sizeof (data_t));
     data_t *state_parameters = (data_t *)malloc(state_param_dim_max_size * sizeof (data_t));
     data_t *obs_parameters_fixed = (data_t *)malloc(obs_param_fixed_dim_max_size * sizeof (data_t));
     data_t *obs_parameters_rand = (data_t *)malloc(obs_param_rand_dim * sizeof (data_t));
-    //data_t *obs_parameters = (data_t *)malloc(obs_param_dim_max_size * sizeof (data_t));
     data_t *data = (data_t *)malloc(data_dim_max_size * sizeof (data_t));
     data_t *seeds = (data_t *)malloc(seeds_dim * sizeof (data_t));
 
@@ -82,7 +49,6 @@ void foo	(	volatile data_t_memory *memory_inout,
     data_t *proposed_mcmc_state = (data_t *)malloc((theta_dim+3+state_count_max_size*state_dim) * sizeof (data_t));
     data_t *current_mcmc_state_exp = (data_t *)malloc((theta_dim) * sizeof (data_t));
     data_t *proposed_mcmc_state_exp = (data_t *)malloc((theta_dim) * sizeof (data_t));
-
 
 	#else
 
@@ -112,8 +78,6 @@ void foo	(	volatile data_t_memory *memory_inout,
     data_t proposed_mcmc_state[theta_dim+3+state_count_max_size*state_dim];
     data_t current_mcmc_state_exp[theta_dim];
     data_t proposed_mcmc_state_exp[theta_dim];
-    //data_t current_particles_saved[state_count_max_size*state_dim];
-    //data_t proposed_particles_saved[state_count_max_size*state_dim];
 
 	#endif
 
@@ -128,9 +92,7 @@ void foo	(	volatile data_t_memory *memory_inout,
     //PRAGMA_HLS(HLS array_partition variable=obs_parameters_fixed block factor=M_data dim=1)
 
 	//read dimension array and decode it
-	//ap_wait();
 	memcpy(dimensions,(const data_t_memory*)(memory_inout+byte_inputs_in_offset/4),15*sizeof(data_t_memory));
-	//ap_wait();
 
 	uint32_t iterations = (uint32_t)dimensions[0];
 	uint32_t P = (uint32_t)dimensions[1];
@@ -146,7 +108,6 @@ void foo	(	volatile data_t_memory *memory_inout,
 	uint32_t theta_dim_1 = (uint32_t)dimensions[9];
 	uint32_t seeds_dim_1 = (uint32_t)dimensions[10];
 	uint32_t rng_init_cycles_1 = (uint32_t)dimensions[11];
-	//ap_wait();
 
 	//input offsets
 	uint32_t initial_theta_offset = 15;
@@ -173,40 +134,20 @@ void foo	(	volatile data_t_memory *memory_inout,
 	uint32_t grnd_out_offset = urnd_comp_out_offset + iterations;
 	#endif
 
-	//ap_wait();
-	#ifdef __SYNTHESIS__
-	//iterations = 10;
-	//P = 128;
-	//state_count = 10;
-	//state_dim = 1;
-	//state_param_fixed = 100;
-	//state_param_rand_dim = 1;
-	//obs_dim = 4;
-	//obs_param_fixed_dim = 400;
-	//obs_param_rand_dim = 1;
-	//theta_dim = 2;
-	//seeds_dim = 50;
-	//rng_init_cycles = 1000;
-	#endif
-
-	//ap_wait();
 	memcpy(initial_theta,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + initial_theta_offset ),theta_dim*sizeof(data_t_memory));
 	memcpy(cov,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + cov_offset ),theta_dim*sizeof(data_t_memory));
 	memcpy(init_particles,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + init_particles_offset ),particles_max_size*state_dim*sizeof(data_t_memory));
 	memcpy(state_parameters,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + state_parameters_offset ),(state_param_fixed_dim)*sizeof(data_t_memory));
 	memcpy(obs_parameters_fixed,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + obs_parameters_fixed_offset ),(obs_param_fixed_dim_max_size)*sizeof(data_t_memory));
-	//memcpy(obs_parameters_rand,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + obs_parameters_rand_offset ),(obs_param_rand_dim)*sizeof(data_t_memory));
 	memcpy(data,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + data_offset ), data_dim_max_size * sizeof(data_t_memory));
 	memcpy(seeds,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + seeds_offset ), seeds_dim * sizeof(data_t_memory));
 	memcpy(prior_parameters,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + prior_parameters_offset ), prior_parameters_dim * sizeof(data_t_memory));
-
-	//ap_wait();
 
 	for (uint32_t i=0;i<theta_dim;i++){
 		initial_theta[i] = logf(initial_theta[i]);
 	}
 
-	// Registers
+	//registers
 	uint32_t acc = 0;
 	data_t acceptance_rate;
 
@@ -215,25 +156,22 @@ void foo	(	volatile data_t_memory *memory_inout,
 	data_t rn_prop[theta_dim], rn_update;
 	data_t  u, u_comp;
 
-	//ap_wait();
-
 	//rng initialization
 	rng_init: for (uint32_t i=0; i<seeds_dim; i++)
 		ctrng_seed(rng_init_cycles, (uint32_t)seeds[i], &rng_state[i]);
-	//ap_wait();
 
 
 	//MCMC iterations (main loop)
 	mcmc_loop: for (unsigned int j=0;j<iterations;j++){
 
-
+		//call iteration function
 		mcmc_iteration( current_mcmc_state, proposed_mcmc_state, current_mcmc_state_exp, proposed_mcmc_state_exp, j, initial_theta, &u, &u_comp, rn_prop, cov, &acc, prior_parameters, P, init_particles,
 						particles, particles_temp, log_lik_particle, weights, weights_partial_sums, resampling_indexes, replication_factors,
 						state_count, state_dim, state_param_fixed_dim, state_param_rand_dim,
 						obs_param_fixed_dim, obs_param_rand_dim, state_parameters,
 						obs_parameters_fixed, obs_parameters_rand, data, rng_state, seeds_dim);
 
-				//ap_wait();
+		//copy results from current iteration to off-chip memory
 		#if MEM_CPY
 				memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + mcmc_state_out_offset + j*(theta_dim+3+state_count*state_dim) ), current_mcmc_state, (theta_dim+3+state_dim*state_count) * sizeof(data_t) );
 				//memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + thetas_out_offset + j*theta_dim ), current_theta, theta_dim * sizeof(data_t) );
@@ -241,6 +179,7 @@ void foo	(	volatile data_t_memory *memory_inout,
 				//memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + particles_out_offset + j*state_count*state_dim ), current_particles_saved, state_dim * state_count * sizeof(data_t) );
 		#endif
 
+		//gor software simulation - transfer data for debugging purposes
 		#ifndef __SYNTHESIS__
 				memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + proposed_thetas_out_offset + j*theta_dim ), proposed_mcmc_state, theta_dim * sizeof(data_t) );
 				memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + proposed_liks_out_offset + j ), &proposed_mcmc_state[theta_dim], sizeof(data_t) );
@@ -249,53 +188,45 @@ void foo	(	volatile data_t_memory *memory_inout,
 				memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + urnd_out_offset + j ), &u, sizeof(data_t) );
 				memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + urnd_comp_out_offset + j ), &u_comp, sizeof(data_t) );
 				memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + grnd_out_offset + j ), &rn_prop[0], sizeof(data_t) );
-
-				//ap_wait();
 		#endif
 
 	}
 
-
-	//ap_wait();
 	//memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + thetas_out_offset+P*state_dim ), rn, P*state_dim*sizeof(data_t) );
 	//memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + thetas_out_offset ), current_theta, theta_dim*iterations * sizeof(data_t) );
 	//memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + liks_out_offset ), &current_lik, sizeof(data_t)*iterations );
 	//memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + particles_out_offset), current_particles_saved, state_dim * state_count *iterations * sizeof(data_t) );
 
-#ifndef __SYNTHESIS__
-	acceptance_rate = ((float)(acc))/((float)iterations);
-	memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + acceptance_rate_out_offset), &acceptance_rate, sizeof(data_t) );
-#else
-	//ap_wait();
-	//memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + particles_out_offset ), particles, particles_max_size*state_dim*sizeof(data_t) );
-#endif
-
+	#ifndef __SYNTHESIS__
+		acceptance_rate = ((float)(acc))/((float)iterations);
+		memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + acceptance_rate_out_offset), &acceptance_rate, sizeof(data_t) );
+	#else
+		//ap_wait();
+		//memcpy( (data_t_memory *)( memory_inout + byte_outputs_out_offset/4 + particles_out_offset ), particles, particles_max_size*state_dim*sizeof(data_t) );
+	#endif
 	
-	#ifndef __SYNTHESIS__	
-	
-	free(dimensions);
-	free(initial_theta);
-	free(cov);
-	free(prior_parameters);
-	free(init_particles);
-	free(state_parameters);
-	free(obs_parameters_fixed);
-	free(obs_parameters_rand);
-	free(data);
-	free(seeds);
-	free(particles);
-	free(particles_temp);
-	free(weights);
-	free(weights_partial_sums);
-	free(resampling_indexes);
-	free(replication_factors);
-	free(current_mcmc_state);
-	free(proposed_mcmc_state);
-	free(current_mcmc_state_exp);
-	free(proposed_mcmc_state_exp);
-	//free(current_particles_saved);
-	//free(proposed_particles_saved);
-	
+	#ifndef __SYNTHESIS__
+		//software simulation only - free memories
+		free(dimensions);
+		free(initial_theta);
+		free(cov);
+		free(prior_parameters);
+		free(init_particles);
+		free(state_parameters);
+		free(obs_parameters_fixed);
+		free(obs_parameters_rand);
+		free(data);
+		free(seeds);
+		free(particles);
+		free(particles_temp);
+		free(weights);
+		free(weights_partial_sums);
+		free(resampling_indexes);
+		free(replication_factors);
+		free(current_mcmc_state);
+		free(proposed_mcmc_state);
+		free(current_mcmc_state_exp);
+		free(proposed_mcmc_state_exp);
 	#endif
 
 }

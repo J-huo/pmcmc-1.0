@@ -1,7 +1,6 @@
 #include "particle_filter.h"
 
 
-
 void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t P, data_t *init_particles,
 		data_t *particles, data_t *particles_temp, data_t *log_lik_particle, data_t *weights, data_t *weights_partial_sums, uint_resampling *resampling_indexes,
 		uint_resampling *replication_factors, uint32_t state_count, uint32_t state_dim, uint32_t state_param_fixed_dim,
@@ -115,8 +114,10 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 
 			parallelism_loop: for (unsigned int k=0; k<M_ti_int; k++){
 
+				//USED-DEFINED (in transition_density.cpp): transition for examined particle
 				transition_density(&particles_temp[k*chunk_size_max + i*state_dim], &particles[k*chunk_size_max + i*state_dim], rng_state, k, t, fetched_state_parameters_fixed, fetched_state_parameters_rand,0);
 
+				//USED-DEFINED (in observation_density.cpp): likelihood for examined particle
 				observation_density(&particles[k*chunk_size_max + i*state_dim], &likelihood_value[k], rng_state, k, t, fetched_obs_parameters_fixed, fetched_obs_parameters_rand, fetched_data, &counter_1);
 
 				//check for NaN and saturate

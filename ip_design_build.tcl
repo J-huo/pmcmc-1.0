@@ -109,19 +109,48 @@ set filename [format "../../src/foo_data.h"]
 	set filename [format "../../src/foo_mem_parameters.h"] 
 	add_files $filename
 	unset filename
-	set filename [format "../../src/gauss.h"] 
+	set filename [format "../../src/rngs.h"] 
 	add_files $filename
 	unset filename
-	set filename [format "../../src/gauss.cpp"] 
+	set filename [format "../../src/rngs.cpp"] 
+	add_files $filename
+	unset filename	
+	set filename [format "../../src/fetch.h"] 
 	add_files $filename
 	unset filename
+	set filename [format "../../src/fetch.cpp"] 
+	add_files $filename
+	unset filename	
+	set filename [format "../../src/transition_density.h"] 
+	add_files $filename
+	unset filename
+	set filename [format "../../src/transition_density.cpp"] 
+	add_files $filename
+	unset filename	
+	set filename [format "../../src/observation_density.h"] 
+	add_files $filename
+	unset filename
+	set filename [format "../../src/observation_density.cpp"] 
+	add_files $filename
+	unset filename	
 	set filename [format "../../src/particle_filter.cpp"] 
 	add_files $filename
 	unset filename
+	set filename [format "../../src/prior.h"] 
+	add_files $filename
+	unset filename
+	set filename [format "../../src/prior.cpp"] 
+	add_files $filename
+	unset filename	
+	set filename [format "../../src/mcmc_iteration.h"] 
+	add_files $filename
+	unset filename
+	set filename [format "../../src/mcmc_iteration.cpp"] 
+	add_files $filename
+	unset filename	
 	set filename [format "../../src/foo.cpp"] 
 	add_files $filename
 	unset filename
-
 # compute circuit clock period in ns
 set time [ expr 1000/$fclk]
 

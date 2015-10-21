@@ -7,15 +7,15 @@
 #include "hls_math.h"
 #include <hls_math.h>
 #include "ap_utils.h"
-//#include "systemc.h"
 
-#define MEM_CPY 1 // use only for simulation
-#define DBG 1 // use only for simulation
+#define MEM_CPY 1 //use only for simulation
 #define PRAGMA_SUB(x) _Pragma (#x)
 #define PRAGMA_HLS(x) PRAGMA_SUB(x)
 
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Static parameters set by user (set before compilation)/////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //SSM parameters
 #define state_dim_def 1
@@ -24,6 +24,9 @@
 #define obs_dim_def 4
 #define obs_param_fixed_dim_one_element_def 4
 #define obs_param_rand_dim_def 1
+
+//positive only unknown parameters
+const uint32_t positive_only[] = {1, 1};
 
 //prior parameters (number of constants)
 const uint32_t prior_parameters_dim = 5;
@@ -34,7 +37,6 @@ const uint32_t state_count_max_size = 16384;
 
 //architecture parallelism
 #define M_ti 2
-const uint32_t M_ti_int = (uint32_t)M_ti;
 
 //numbers of random values needed
 #define trans_nrnd_def 1
@@ -51,8 +53,11 @@ const data_t FP_inf_pos = 1e30;
 const data_t FP_power_min = -68.0f;
 const data_t FP_power_max = 68.0f;
 
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //(DO NOT CHANGE) Static parameters set based on previous parameters ////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //SSM parameters
 const uint32_t state_dim = (uint32_t)state_dim_def;
@@ -64,6 +69,9 @@ const uint32_t obs_param_rand_dim = (uint32_t)obs_param_rand_dim_def;
 
 //dimension of theta
 const uint32_t theta_dim = state_param_rand_dim + obs_param_rand_dim;
+
+//architecture parallelism
+const uint32_t M_ti_int = (uint32_t)M_ti;
 
 //maximum problem sizes
 const uint32_t state_param_fixed_dim_max_size = state_count_max_size*state_param_fixed_dim_one_element;
@@ -91,6 +99,7 @@ const uint32_t seeds_dim = trans_nrnd*M_ti_int*2 + obs_nrnd*M_ti_int*2 + trans_u
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //(DO NOT CHANGE) Other constants ////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //type definitions
 //typedef ap_uint<log2_particles_max_size> uint_resampling;

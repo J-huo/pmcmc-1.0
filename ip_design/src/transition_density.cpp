@@ -1,6 +1,6 @@
 #include "transition_density.h"
 
-
+//USED-DEFINED
 void transition_density(data_t *previous_particle, data_t *proposed_particle, rng_state_t *rng_state, uint32_t k, uint32_t t, data_t *state_parameters_fixed, data_t *state_parameters_rand, uint32_t stage){
 
 		//variable declarations

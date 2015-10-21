@@ -7,6 +7,7 @@
 #include "prior.h"
 #include "rngs.h"
 
+data_t log_lognpdf(data_t x, data_t mu, data_t s);
 
 void mcmc_iteration(data_t *current_mcmc_state, data_t *proposed_mcmc_state, data_t *current_mcmc_state_exp, data_t *proposed_mcmc_state_exp, unsigned int iter, data_t *initial_theta, data_t *u, data_t *u_comp, data_t *rn_prop, data_t *cov,
 		uint32_t *acc, data_t *prior_parameters, uint32_t P, data_t *init_particles,
