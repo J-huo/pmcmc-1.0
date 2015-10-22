@@ -62,7 +62,6 @@ proc src {file args} {
   return -code $code $return
 }
 
-
 # ############################# 
 # Procedure used to build and run Vivado HLS c-simulation
 proc csim {input_vectors project_name FPGA_name fclk} {
@@ -163,6 +162,24 @@ proc csim {input_vectors project_name FPGA_name fclk} {
 }
 
 
+# #############################   
+# Load configuration parameters
+set file "configuration_parameters.tcl"
+src $file
+
+
+# #############################   
+# Load user parameters
+set file "user_parameters.tcl"
+src $file
+
+
+# #############################    
+# Update foo_mem_parameters.h header file
+set file "make_foo_mem_parameters_h.tcl"
+src $file $state_dimension $observation_dimension $transition_parameters_unknown $observation_parameters_unknown $transition_parameters_known $observation_parameters_known $positive_only $prior_parameters $max_particles $max_state_sequence $par $transition_normals $transition_uniforms $observation_normals $observation_uniforms $rng_init_cycles
+unset file
+
 # ####################################################################################################################
 # #################################################################################################################### 
 #  C-SIMULATION
@@ -171,11 +188,6 @@ proc csim {input_vectors project_name FPGA_name fclk} {
 
 set sim_type "'test_csim'"
 set Matlab "matlab.exe"
-
-# #############################   
-# Load configuration parameters
-set file "configuration_parameters.tcl"
-src $file
 
 # #############################  
 # clear previous csim results
