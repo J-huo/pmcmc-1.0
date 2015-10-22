@@ -80,9 +80,9 @@ src $file
 # #############################   
 # Update funeval_data.h header file
 
-set file "make_template/make_foo_data_h.tcl"
-src $file $max_vector_length $float_fix $bits_word_integer_length $bits_word_fraction_length
-unset file
+#set file "make_template/make_foo_data_h.tcl"
+#src $file $max_vector_length $float_fix $bits_word_integer_length $bits_word_fraction_length
+#unset file
 
 # ############################# 
 # #############################   
