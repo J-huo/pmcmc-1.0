@@ -114,7 +114,7 @@ void foo	(	volatile data_t_memory *memory_inout,
 	uint32_t cov_offset = initial_theta_offset + theta_dim;
 	uint32_t init_particles_offset = cov_offset + theta_dim;
 	uint32_t state_parameters_offset = init_particles_offset + particles_max_size*state_dim;
-	uint32_t obs_parameters_fixed_offset = state_parameters_offset + state_param_fixed_dim + state_param_rand_dim;
+	uint32_t obs_parameters_fixed_offset = state_parameters_offset + state_param_fixed_dim_max_size + state_param_rand_dim;
 	uint32_t obs_parameters_rand_offset = obs_parameters_fixed_offset + obs_param_fixed_dim_max_size;
 	uint32_t data_offset = obs_parameters_rand_offset + obs_param_rand_dim;
 	uint32_t seeds_offset = data_offset + data_dim_max_size;
@@ -137,7 +137,7 @@ void foo	(	volatile data_t_memory *memory_inout,
 	memcpy(initial_theta,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + initial_theta_offset ),theta_dim*sizeof(data_t_memory));
 	memcpy(cov,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + cov_offset ),theta_dim*sizeof(data_t_memory));
 	memcpy(init_particles,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + init_particles_offset ),particles_max_size*state_dim*sizeof(data_t_memory));
-	memcpy(state_parameters,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + state_parameters_offset ),(state_param_fixed_dim)*sizeof(data_t_memory));
+	memcpy(state_parameters,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + state_parameters_offset ),(state_param_fixed_dim_max_size)*sizeof(data_t_memory));
 	memcpy(obs_parameters_fixed,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + obs_parameters_fixed_offset ),(obs_param_fixed_dim_max_size)*sizeof(data_t_memory));
 	memcpy(data,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + data_offset ), data_dim_max_size * sizeof(data_t_memory));
 	memcpy(seeds,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + seeds_offset ), seeds_dim * sizeof(data_t_memory));

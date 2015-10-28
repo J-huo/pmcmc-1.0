@@ -1,7 +1,7 @@
 function [log_likelihood,particles_saved,weights] = bootstrap_filter(N,...
     initial_particles,state_count,state_dim,obs_dim,state_param_fixed_dim,...
     state_param_rand_dim,obs_param_fixed_dim,obs_param_rand_dim,...
-    state_parameters,obs_parameters,observations,x,iter)
+    state_parameters,obs_parameters,observations,iter,max_state_sequence)
 
 global problem;
 
@@ -134,7 +134,8 @@ elseif (problem==1)
 
         % transition 
         %t
-        state_parameters_send(1)=state_parameters(t);
+        %state_parameters_send(1)=state_parameters(t);
+        state_parameters_send(1)=state_parameters(t:max_state_sequence:(max_state_sequence*state_dim));
         state_parameters_send(2)=state_parameters(state_param_fixed_dim + state_param_rand_dim);
         state_param_fixed_dim_send=state_dim;
         
@@ -143,14 +144,14 @@ elseif (problem==1)
 
         
         % observation
-        
-        obs_parameters_send(1, 1:obs_dim) = obs_parameters(1, (obs_dim*(t-1)+1):(obs_dim*(t-1)+obs_dim) );
+        obs_parameters_send(1, 1:obs_dim) = obs_parameters(1, t:max_state_sequence:(max_state_sequence*obs_dim));
+        %obs_parameters_send(1, 1:obs_dim) = obs_parameters(1, (obs_dim*(t-1)+1):(obs_dim*(t-1)+obs_dim) );
         obs_parameters_send(1, obs_dim+1) = obs_parameters(1, obs_param_fixed_dim + obs_param_rand_dim);
         obs_param_fixed_dim_send=obs_dim;
         
         [L, scaling_factor] = likelihood_equation_vector(obs_dim,...
             obs_param_fixed_dim_send, obs_param_rand_dim, obs_parameters_send,...
-            particles, observations(:,t));
+            particles, observations(t,:)');
                
         log_lik_test = log(mean(L));
         if (sum(L)==single(0))

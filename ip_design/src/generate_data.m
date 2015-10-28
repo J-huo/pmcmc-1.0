@@ -6,7 +6,7 @@ function [states, observations] = generate_data(state_dim, state_count, state_pa
         
         %tracking
         states = zeros(state_dim, state_count);
-        states(:,1)=state_prior_equation(state_dim, init_state_param_dim, init_state_parameters);
+        states(:,1)=state_prior_equation();
         for i=2:1:state_count        
             states(:,i)=transition_equation(state_dim,...
                 state_param_fixed_dim, state_param_rand_dim, state_parameters, states(:,i-1)); 
@@ -23,7 +23,7 @@ function [states, observations] = generate_data(state_dim, state_count, state_pa
         
         %genome
         states = zeros(state_dim, state_count);
-        states(:,1)=state_prior_equation(state_dim, init_state_param_dim, init_state_parameters);
+        states(:,1)=state_prior_equation();
         for i=2:1:state_count       
             state_parameters_send(1)=state_parameters(i);
             state_parameters_send(2)=state_parameters(state_param_fixed_dim + state_param_rand_dim);

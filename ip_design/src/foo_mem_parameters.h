@@ -82,9 +82,10 @@ const uint32_t data_dim_max_size = state_count_max_size * obs_dim; //*state_dim
 //maximum chunk sizes 
 const uint32_t chunk_size_max = (particles_max_size*state_dim)/(M_ti_int); //block partitioning 
 const uint32_t chunk_size_particles_max = (particles_max_size)/(M_ti_int); //block partitioning 
-const uint32_t chunk_size_data_max = (data_dim_max_size)/(obs_dim); //cyclic partitioning 
-const uint32_t chunk_size_obs_param_fixed_max = (obs_param_fixed_dim_max_size)/(obs_param_fixed_dim_one_element); //cyclic partitioning 
- 
+const uint32_t chunk_size_data_max = (data_dim_max_size)/(obs_dim);
+const uint32_t chunk_size_obs_param_fixed_max = (obs_param_fixed_dim_max_size)/(obs_param_fixed_dim_one_element);
+const uint32_t chunk_size_state_param_fixed_max = (state_param_fixed_dim_max_size)/(state_param_fixed_dim_one_element);
+
 //numbers of random values needed 
 const uint32_t trans_nrnd = (uint32_t)trans_nrnd_def; 
 const uint32_t trans_urnd = (uint32_t)trans_urnd_def; 

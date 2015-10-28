@@ -176,9 +176,13 @@ src $file
 
 # #############################    
 # Update foo_mem_parameters.h header file
-set file "make_foo_mem_parameters_h.tcl"
-src $file $state_dimension $observation_dimension $transition_parameters_unknown $observation_parameters_unknown $transition_parameters_known $observation_parameters_known $positive_only $prior_parameters $max_particles $max_state_sequence $par $transition_normals $transition_uniforms $observation_normals $observation_uniforms $rng_init_cycles
-unset file
+#set file "make_foo_mem_parameters_h.tcl"
+#src $file $state_dimension $observation_dimension $transition_parameters_unknown $observation_parameters_unknown $transition_parameters_known $observation_parameters_known $positive_only $prior_parameters $max_particles $max_state_sequence $par $transition_normals $transition_uniforms $observation_normals $observation_uniforms $rng_init_cycles
+#unset file
+
+#set file "make_set_static_parameters_m.tcl"
+#src $file $state_dimension $observation_dimension $transition_parameters_unknown $observation_parameters_unknown $transition_parameters_known $observation_parameters_known $positive_only $prior_parameters $max_particles $max_state_sequence $par $transition_normals $transition_uniforms $observation_normals $observation_uniforms $rng_init_cycles
+#unset file
 
 # ####################################################################################################################
 # #################################################################################################################### 

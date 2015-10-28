@@ -4,7 +4,7 @@ void fetch_data_parameters(data_t *fetched_state_parameters_fixed, data_t *fetch
 
 	#if state_param_fixed_dim_one_element_def>0
 		for (uint32_t q=0; q<state_param_fixed_dim_one_element; q++){
-			fetched_state_parameters_fixed[q] = state_parameters[t*state_param_fixed_dim_one_element+q];
+			fetched_state_parameters_fixed[q] = state_parameters[q*chunk_size_state_param_fixed_max+t];
 		}
 	#endif
 
