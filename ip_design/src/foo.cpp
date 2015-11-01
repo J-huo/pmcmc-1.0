@@ -163,7 +163,7 @@ void foo	(	volatile data_t_memory *memory_inout,
 
 	//MCMC iterations (main loop)
 	mcmc_loop: for (unsigned int j=0;j<iterations;j++){
-
+		#pragma HLS LOOP_TRIPCOUNT min=10 max=10 avg=10
 		//call iteration function
 		mcmc_iteration( current_mcmc_state, proposed_mcmc_state, current_mcmc_state_exp, proposed_mcmc_state_exp, j, initial_theta, &u, &u_comp, rn_prop, cov, &acc, prior_parameters, P, init_particles,
 						particles, particles_temp, log_lik_particle, weights, weights_partial_sums, resampling_indexes, replication_factors,

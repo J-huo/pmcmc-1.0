@@ -20,13 +20,13 @@ set observation_uniforms [lindex $argv 14]
 set rng_init_cycles [lindex $argv 15]
 
 
-set file [open  ip_design/src/set_dynamic_parameters.m w]
+set file [open  matlab/set_dynamic_parameters.m w]
 
 
 puts $file "%dynamic parameters
 
 %load static parameters (they can be used when defining dynamic paramaters)
-load static_parameters.mat
+%load static_parameters.mat
 
 %dynamic parameters
 state_sequence = 100; %fill in the size of the state sequence (non-zero integer)
@@ -86,6 +86,12 @@ observation_parameters_known_values = zeros(state_sequence, observation_paramete
 data = zeros(state_sequence, observation_dimension); %set values of data (matrix \[state_sequence x observation_dimension\])"
 
 puts $file ""
+puts $file "software_sim = 0; %is software simulation performed after fpga simulation? (only set to 1 if matlab pmcmc version is available)
+num_runs = 1; %number of runs for final design (both for sw and for fpga)
+fpga_runs = 1; %are fpga runs performed?
+software_runs = 0; %are software runs performed? (only set to 1 if matlab pmcmc version is available)
+filename_save = 'results_test.mat'; %.mat filename where results from runs are saved"
+
 puts $file ""
 puts $file "save('dynamic_parameters.mat');"
 

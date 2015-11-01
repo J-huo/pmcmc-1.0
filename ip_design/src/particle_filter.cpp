@@ -70,7 +70,7 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 
 	//initialise particle set
 	particles_init_loop: for (unsigned int i = 0; i < chunk_size_true; i++){
-		#pragma HLS LOOP_TRIPCOUNT min=128 max=128 avg=128
+		#pragma HLS LOOP_TRIPCOUNT min=1000 max=1000 avg=1000
 		particles_init_parallelism_loop: for (unsigned int k = 0; k < M_ti_int; k++){
 			particles_temp[k*chunk_size_max + i] = init_particles[k*chunk_size_max + i];
 		}
@@ -110,7 +110,7 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 
 		//execute the transition and likelihood steps of the particle filter for all particles (for time step t)
 		main_loop: for (unsigned int i=0; i<chunk_size_particles_true; i++){
-			//#pragma HLS LOOP_TRIPCOUNT min=128 max=128 avg=128
+			#pragma HLS LOOP_TRIPCOUNT min=1000 max=1000 avg=1000
 
 			parallelism_loop: for (unsigned int k=0; k<M_ti_int; k++){
 
@@ -443,7 +443,7 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 
 		//compute weights from log-weights and then accumulate weights to form chunk sums
 		sum_main_loop: for (unsigned int i=0; i<chunk_size_particles_true; i++){
-				#pragma HLS LOOP_TRIPCOUNT min=128 max=128 avg=128
+				#pragma HLS LOOP_TRIPCOUNT min=1000 max=1000 avg=1000
 
 				sum_parallelism_loop: for (unsigned int k=0; k<M_ti_int; k++){
 
@@ -536,7 +536,7 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 
 		//main resampling loop --> computes replication counts for all particles
 		resampling_main_loop: for (uint32_t j=0; j<chunk_size_particles_true; j++){
-			#pragma HLS LOOP_TRIPCOUNT min=128 max=128 avg=128
+			#pragma HLS LOOP_TRIPCOUNT min=1000 max=1000 avg=1000
 
 			resampling_parallelism_loop: for (uint32_t k=0; k<M_ti_int; k++){
 
@@ -579,7 +579,7 @@ void particle_filter(data_t *log_lik_out, data_t *particles_saved_out, uint32_t 
 
 			resampling_1st_update_inner_loop: for(uint32_t i=0; i<chunk_size_particles_true; i++){
 
-				#pragma HLS LOOP_TRIPCOUNT min=128 max=128 avg=128
+				#pragma HLS LOOP_TRIPCOUNT min=1000 max=1000 avg=1000
 
 				//number of replications
 				o = (uint32_t)replication_factors[k*chunk_size_particles_max + i];

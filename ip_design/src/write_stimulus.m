@@ -7,13 +7,13 @@ problem=1;
 tmp_str=strcat('Writing stimulus files set ', num2str(num_simulation));
 disp(tmp_str);
 
-set_static_parameters
-set_dynamic_parameters
-load static_parameters.mat
-load dynamic_parameters.mat
+copyfile('../../matlab/state_prior_equation.m','state_prior_equation.m');
+set_static_parameters;
+run('../../matlab/set_dynamic_parameters');
+%load static_parameters.mat;
+%load '../../matlab/dynamic_parameters.mat'
 
 rng(user_seed);
-
 
 %transition_parameters_known_max_size = max_state_sequence*state_dimension;
 %observation_parameters_known_max_size = max_state_sequence*observation_dimension*state_dimension;

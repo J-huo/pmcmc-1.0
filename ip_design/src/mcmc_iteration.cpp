@@ -104,6 +104,7 @@ void mcmc_iteration(data_t *current_mcmc_state, data_t *proposed_mcmc_state, dat
 			}
 
 			particles_saved_update_0_loop: for (unsigned int i=0;i<state_count*state_dim;i++){
+					#pragma HLS LOOP_TRIPCOUNT min=1000 max=1000 avg=1000
 					current_mcmc_state[theta_dim+3+i] = proposed_mcmc_state[theta_dim+3+i];
 			}
 
@@ -133,8 +134,10 @@ void mcmc_iteration(data_t *current_mcmc_state, data_t *proposed_mcmc_state, dat
 						current_mcmc_state_exp[i] = proposed_mcmc_state_exp[i];
 				}
 
-				particles_saved_update_loop: for (unsigned int i=0;i<state_count*state_dim;i++)
-						current_mcmc_state[theta_dim+3+i] = proposed_mcmc_state[theta_dim+3+i];
+				particles_saved_update_loop: for (unsigned int i=0;i<state_count*state_dim;i++){
+					#pragma HLS LOOP_TRIPCOUNT min=1000 max=1000 avg=1000
+					current_mcmc_state[theta_dim+3+i] = proposed_mcmc_state[theta_dim+3+i];
+				}
 
 				current_mcmc_state[theta_dim] = proposed_mcmc_state[theta_dim];
 				current_mcmc_state[theta_dim+1] = proposed_mcmc_state[theta_dim+1];

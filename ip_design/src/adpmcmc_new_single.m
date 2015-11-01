@@ -7,6 +7,8 @@ function [thetas, liks, priors, posteriors, particles, acceptance_rate, prop_the
  
 global problem;
  
+load('static_parameters.m','positive_only');
+
 if (problem==0)
     
     %tracking
@@ -200,6 +202,9 @@ elseif (problem==1)
         %[ProposedLikelihood,samplesprop2,wprop] = bootstrap_filter(obs_dim,strains,state_count,N,state_dim,state_param_dim,obs_param_dim,ExpTheta,ProposedTheta((state_dim+1):theta_dim),OneRowData_int,OneRowData_float,InitialValues,model);
 
         %if (all(ProposedTheta > 0))    
+  
+        
+        
         
             state_parameters(state_param_fixed_dim+1)=exp(ProposedTheta(1));
             obs_parameters(obs_param_fixed_dim+1)=exp(ProposedTheta(2));        
@@ -230,9 +235,14 @@ elseif (problem==1)
             %normlike([0,sqrt(1000)],CurrentTheta((state_dim+1):theta_dim));
 
         % Compute log-ratio of posteriors    
-        logratio = ( propose - current ) + log(lognpdf(exp(CurrentTheta(1)),(ProposedTheta(1)),cov(1,1))) + log(lognpdf(exp(CurrentTheta(2)),(ProposedTheta(2)),cov(2,2))) - log(lognpdf(exp(ProposedTheta(1)),(CurrentTheta(1)),cov(1,1))) - log(lognpdf(exp(ProposedTheta(2)),(CurrentTheta(2)),cov(2,2)));
-        % + ( log(mvncdf(ProposedTheta,zeros(1,theta_dim),cov)) - log(ncdf(ProposedTheta)) ); 
-
+        logratio = ( propose - current );
+        
+        for index=1:theta_dim
+			if (positive_only(index) == 1)
+                logratio = logratio + log(lognpdf(exp(CurrentTheta(index)),(ProposedTheta(index)),cov(index,index))) - log(lognpdf(exp(ProposedTheta(index)),(CurrentTheta(index)),cov(index,index)));                              
+            end
+        end
+        
         %MCMC acceptance step
         u = single(rand);
         urnd_matlab(1,i) = u;
