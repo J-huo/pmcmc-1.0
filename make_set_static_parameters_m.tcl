@@ -58,6 +58,23 @@ puts $file $tmp_line
 unset tmp_line
 
 puts $file ""
+append tmp_line "positive_only = \["
+set index -1
+foreach i $positive_only {
+		incr index
+		if {$index > 0} {
+			append tmp_line "," 
+		} 
+		
+		append tmp_line $i
+			
+}
+append tmp_line "\];"
+puts $file $tmp_line
+unset tmp_line
+
+
+puts $file ""
 append tmp_line "prior_parameters = " $prior_parameters ";"
 puts $file $tmp_line
 unset tmp_line
@@ -124,6 +141,22 @@ append tmp_line "observation_normals = " $observation_normals ";"
 puts $file $tmp_line
 unset tmp_line
 append tmp_line "observation_uniforms = " $observation_uniforms ";"
+puts $file $tmp_line
+unset tmp_line
+
+puts $file ""
+append tmp_line "positive_only = \["
+set index -1
+foreach i $positive_only {
+		incr index
+		if {$index > 0} {
+			append tmp_line "," 
+		} 
+		
+		append tmp_line $i
+			
+}
+append tmp_line "\];"
 puts $file $tmp_line
 unset tmp_line
 

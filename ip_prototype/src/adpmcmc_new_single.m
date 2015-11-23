@@ -7,6 +7,9 @@ function [thetas, liks, priors, posteriors, particles, acceptance_rate, prop_the
  
 global problem;
  
+load('static_parameters.mat','positive_only');
+load('static_parameters.mat','*known','*unknown');
+
 if (problem==0)
     
     %tracking
@@ -139,10 +142,23 @@ elseif (problem==1)
     urnd_matlab = single(zeros(1,iterations));
     
     
-    thetas(:,1) = log(initial_theta);
+    thetas(:,1) = log(initial_theta');
     CurrentTheta = thetas(:,1);
-    state_parameters(state_param_fixed_dim+1)=exp(CurrentTheta(1));
-    obs_parameters(obs_param_fixed_dim+1)=exp(CurrentTheta(2));
+    for index = 1:theta_dim
+        if (positive_only(index) == 1)
+            CurrentThetaExp(index) = exp(CurrentTheta(index));            
+        else
+            CurrentThetaExp(index) = CurrentTheta(index);        
+        end 
+    end  
+    
+    for index = 1:state_param_rand_dim
+        state_parameters(transition_parameters_known*max_state_sequence+index)=CurrentThetaExp(index);%exp(CurrentTheta(1));
+    end
+    for index = 1:obs_param_rand_dim
+        obs_parameters(observation_parameters_known*max_state_sequence+index)=CurrentThetaExp(state_param_rand_dim+index);%exp(CurrentTheta(1));
+    end
+    
     [Likelihood,xparts,w] = bootstrap_filter(N,initial_state,...
         state_count,state_dim,obs_dim,state_param_fixed_dim,...
         state_param_rand_dim,obs_param_fixed_dim,obs_param_rand_dim,...
@@ -151,7 +167,7 @@ elseif (problem==1)
     %ind=randsample(N,1,true,w); %chooses one particle out of N according to their weights - this particle is kept
     %xparts = samplesinit(:,ind);
     particles(:,1:state_count) = xparts;
-    Prior = log_prior_function(exp(CurrentTheta),prior_parameters);
+    Prior = log_prior_function(CurrentThetaExp,prior_parameters);
     Posterior = Likelihood + Prior;
     liks(1,1) = Likelihood;
     priors(1,1) = Prior;
@@ -200,16 +216,33 @@ elseif (problem==1)
         %[ProposedLikelihood,samplesprop2,wprop] = bootstrap_filter(obs_dim,strains,state_count,N,state_dim,state_param_dim,obs_param_dim,ExpTheta,ProposedTheta((state_dim+1):theta_dim),OneRowData_int,OneRowData_float,InitialValues,model);
 
         %if (all(ProposedTheta > 0))    
+  
+        for index = 1:theta_dim
+            if (positive_only(index) == 1)
+                ProposedThetaExp(index) = exp(ProposedTheta(index));            
+            else
+                ProposedThetaExp(index) = ProposedTheta(index);        
+            end            
+            
+        end
+         
         
-            state_parameters(state_param_fixed_dim+1)=exp(ProposedTheta(1));
-            obs_parameters(obs_param_fixed_dim+1)=exp(ProposedTheta(2));        
+                for index = 1:state_param_rand_dim
+                    state_parameters(transition_parameters_known*max_state_sequence+index)=CurrentThetaExp(index);%exp(CurrentTheta(1));
+                end
+                for index = 1:obs_param_rand_dim
+                    obs_parameters(observation_parameters_known*max_state_sequence+index)=CurrentThetaExp(state_param_rand_dim+index);%exp(CurrentTheta(1));
+                end
+        
+            %state_parameters(state_param_fixed_dim+1)=exp(ProposedTheta(1));
+            %obs_parameters(obs_param_fixed_dim+1)=exp(ProposedTheta(2));        
                 [ProposedLikelihood,xpartsprop,wprop] = bootstrap_filter(N,...
                 initial_state,state_count,state_dim,obs_dim,...
                 state_param_fixed_dim,state_param_rand_dim,obs_param_fixed_dim,...
                 obs_param_rand_dim,state_parameters,obs_parameters,observations,i,max_state_sequence);
     
             
-            ProposedPrior = log_prior_function(exp(ProposedTheta),prior_parameters);
+            ProposedPrior = log_prior_function(ProposedThetaExp,prior_parameters);
             ProposedPosterior = ProposedLikelihood + ProposedPrior;
 
             
@@ -230,9 +263,14 @@ elseif (problem==1)
             %normlike([0,sqrt(1000)],CurrentTheta((state_dim+1):theta_dim));
 
         % Compute log-ratio of posteriors    
-        logratio = ( propose - current ) + log(lognpdf(exp(CurrentTheta(1)),(ProposedTheta(1)),cov(1,1))) + log(lognpdf(exp(CurrentTheta(2)),(ProposedTheta(2)),cov(2,2))) - log(lognpdf(exp(ProposedTheta(1)),(CurrentTheta(1)),cov(1,1))) - log(lognpdf(exp(ProposedTheta(2)),(CurrentTheta(2)),cov(2,2)));
-        % + ( log(mvncdf(ProposedTheta,zeros(1,theta_dim),cov)) - log(ncdf(ProposedTheta)) ); 
-
+        logratio = ( propose - current );
+        
+        for index=1:theta_dim
+			if (positive_only(index) == 1)
+                logratio = logratio + log(lognpdf(CurrentThetaExp(index),ProposedTheta(index),cov(index,index))) - log(lognpdf(ProposedThetaExp(index),CurrentTheta(index),cov(index,index)));                              
+            end
+        end
+        
         %MCMC acceptance step
         u = single(rand);
         urnd_matlab(1,i) = u;
@@ -242,7 +280,8 @@ elseif (problem==1)
             Prior = ProposedPrior;
             Posterior = ProposedPosterior;
             xparts=xpartsprop;
-            CurrentTheta = ProposedTheta;  
+            CurrentTheta = ProposedTheta;
+            CurrentThetaExp = ProposedThetaExp;
             AcceptanceCounter=AcceptanceCounter+1;
         end
         thetas(:,i) = CurrentTheta;
@@ -263,7 +302,7 @@ elseif (problem==1)
         %end    
 
         %display
-        if mod(i,1000)==0 
+        if mod(i,10)==0 
             disp(i); 
         end 
 

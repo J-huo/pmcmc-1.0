@@ -1,10 +1,9 @@
-
 state_sequence = 256;
 particles = 1024;
 prior_parameter_values = [1.2, 100, 1, 100, 0];
-mcmc_iterations = 300; %number of MCMC iterations
-initial_mcmc_sample = [9, 1];%[3.2680 1.3049];%[8, 3]; % initial theta values
-proposal_std = [0.04, 0.04];
+mcmc_iterations = 100; %number of MCMC iterations
+initial_mcmc_sample = [4, 0.1];%[3.2680 1.3049];%[8, 3]; % initial theta values
+proposal_std = [0.4, 0.4];
 user_seed = 235678; %non-negative integer
 
 
@@ -61,6 +60,7 @@ else
     sigma_t=2; %common unknown parameter for state transitions
     sigma_o=0.2; %unknown parameter for observation equation
     transition_parameters_known_values=ones(state_sequence,1);%unifrnd(0,5,state_sequence,1); %deltas as described in proposal - randomly generated with max=5
+    %rng(235235);
     observation_parameters_known_values=unidrnd(15,state_sequence,observation_parameters_known);%unidrnd(15,state_sequence,observation_dimension); %number of trials for all time steps and all replicates, randomly generated with max=10
     observation_parameters_known_values_new=reshape(observation_parameters_known_values',1,state_sequence*observation_parameters_known);
       
@@ -72,11 +72,12 @@ else
         data = data_temp';
 end
 
-software_sim = 1; %is software simulation performed after fpga simulation?
+software_sim = 1; %is software simulation performed after fpga simulation? (only set to 1 if matlab pmcmc version is available)
 num_runs = 1; %number of runs for final design (both for sw and for fpga)
 fpga_runs = 1; %are fpga runs performed?
-software_runs = 1; %are software runs performed?
-filename_save = 'results_test_3.mat'; %.mat filename where results from runs are saved
+software_runs = 0; %are software runs performed? (only set to 1 if matlab pmcmc version is available)
+filename_save = 'results_test_4.mat'; %.mat filename where results from runs are saved
+
 
 
 save('dynamic_parameters.mat');

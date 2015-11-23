@@ -28,7 +28,7 @@ open_solution "solution1"
 set_part {xc7z045ffg900-2}
 create_clock -period 6 -name default
 source "./my_project0/solution1/directives.tcl"
-csim_design
+csim_design -clean
 csynth_design
 cosim_design -trace_level none -rtl verilog -tool auto
 export_design -format ip_catalog

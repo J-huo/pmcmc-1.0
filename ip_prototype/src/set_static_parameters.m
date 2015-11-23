@@ -11,6 +11,8 @@ transition_uniforms = 0;
 observation_normals = 4;
 observation_uniforms = 0;
 
+positive_only = [1,1];
+
 prior_parameters = 5;
 
 %FPGA architecture parameters

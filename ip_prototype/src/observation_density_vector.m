@@ -1,14 +1,14 @@
-function [likelihoods, scaling_factor] = likelihood_equation_vector(obs_dim, obs_param_fixed_dim, obs_param_rand_dim, obs_parameters, states, observations)
+function [likelihoods] = observation_density_vector(obs_parameters_fixed, obs_parameters_rand, data, current_particles)
 
 global problem;
 
-N = size(states,2); %number of particles
-state_dim = size(states,1);
+%N = size(states,2); %number of particles
+%state_dimension = size(states,1);
 
 if (problem==0)
 
     %tracking
-    J = obs_dim;                                    % no. of sensors
+    J = observation_dimension;                                    % no. of sensors
     P0 = obs_parameters(1);                         % transmitted power
     ss = obs_parameters(2);                         % side of the square area monitored by the sensor network [centered at (0,0)]
     alpha = obs_parameters(3);                      % power-decay exponent
@@ -41,58 +41,40 @@ if (problem==0)
     
 elseif (problem==1) 
     
-    %genome    
-    n(1,:) = obs_parameters(1,1:obs_param_fixed_dim);
-    s_o = obs_parameters(obs_param_fixed_dim + obs_param_rand_dim);
+    load static_parameters.mat
+    load('../../matlab/dynamic_parameters.mat','particles');
     
-    LL = single(zeros([obs_dim N]));      % log-likelihood    
-    temp = single(zeros([obs_dim N]));  
-    p=single(zeros(obs_dim,N));
-    %temp=zeros(obs_dim,1);
-    %p=zeros(obs_dim,1);
-    %observation=zeros(obs_dim,1);
+    %genome    
+    n(1,:) = obs_parameters_fixed(1,:);
+    s_o = obs_parameters_rand(1);%(obs_param_fixed_dim + obs_param_rand_dim);
+    
+    LL = single(zeros([observation_dimension particles]));      % log-likelihood    
+    temp = single(zeros([observation_dimension particles]));  
+    p=single(zeros(observation_dimension,particles));
+    %temp=zeros(observation_dimension,1);
+    %p=zeros(observation_dimension,1);
+    %observation=zeros(observation_dimension,1);
 
-    for i=1:1:obs_dim        
-        temp(i,1:N)=normrnd(states,repmat(s_o,state_dim,N));
-        ind_big = (temp(i,1:N)>single(68));
-        ind_small = (temp(i,1:N)<single(-68));        
-        p(i,1:N)=exp(temp(i,1:N))./(exp(temp(i,1:N))+1); 
+    for i=1:1:observation_dimension        
+        temp(i,1:particles)=normrnd(current_particles,repmat(s_o,state_dimension,particles));
+        ind_big = (temp(i,1:particles)>single(68));
+        ind_small = (temp(i,1:particles)<single(-68));        
+        p(i,1:particles)=exp(temp(i,1:particles))./(exp(temp(i,1:particles))+1); 
         p(i,ind_big) = single(1);
         p(i,ind_small) = single(0);
-        LL(i,1:N)=log(binopdf(observations(i),n(1,i),p(i,1:N)));
+        LL(i,1:particles)=log(binopdf(data(1,i),n(1,i),p(i,1:particles)));
     end
     
     ind_ll = (~(LL>single(-1e30)));
     LL(ind_ll) = single(-1e30);
-    LL_p=sum(LL);
-    nonvalid = (LL_p<single(-1e30));
-    LL_p(nonvalid) = single(-1e30);
+    likelihoods=sum(LL);
+    nonvalid = (likelihoods<single(-1e30));
+    likelihoods(nonvalid) = single(-1e30);
     
     if any(nonvalid)
         %disp('Count:')
     %disp(sum(nonvalid));
         %disp('-Inf sub-loglik')
-    end
-    
-    scaling_factor = max(LL_p);
-    if (scaling_factor == single(-1e30))
-    disp('sos');
-    end
-    likelihoods = exp ( LL_p - scaling_factor );
-    
-    if ~(all(~isnan(likelihoods)))
-        likelihoods(isnan(likelihoods)) = single(0);
-       % error('NaN sub-loglikelihood.')
-        %error(message('stats:randsample:InvalidWeights'));
-    end
-    
-    if ~(all(~isinf(likelihoods)))
-        error('Inf sub-loglikelihood.')
-        %error(message('stats:randsample:InvalidWeights'));
-    end
-    
-    if ~(sum(likelihoods) > 0) || ~all(likelihoods>=0) % catches NaNs
-               error(message('stats:randsample:InvalidWeights'));
     end
     
     

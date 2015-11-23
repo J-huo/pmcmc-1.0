@@ -1,8 +1,7 @@
-function [states] = transition_equation_vector(state_dim, state_param_fixed_dim, state_param_rand_dim, state_parameters, previous_states)
+function [proposed_particles] = transition_density_vector(state_parameters_fixed,...
+    state_parameters_rand, previous_particles)
 
 global problem;
-
-N=size(previous_states,2);
 
 if (problem==0)
     
@@ -20,12 +19,15 @@ if (problem==0)
     states(:,1:N) = AT*previous_states(:,1:N) + U; 
     
 elseif (problem==1)
+  
+    load static_parameters.mat
+    load('../../matlab/dynamic_parameters.mat','particles');
     
     %genome
-    delta=state_parameters(1);
-    s=state_parameters(2);    
+    delta=state_parameters_fixed(1);
+    s=state_parameters_rand(1);    
     s_t = sqrt( ( s^2 ) * delta );    
-    states(:,1:N)=normrnd(single(previous_states(:,1:N)),single(repmat(s_t,state_dim,N))); 
+    proposed_particles(:,1:particles)=normrnd(single(previous_particles(:,1:particles)),single(repmat(s_t,state_dimension,particles))); 
     
 end   
 

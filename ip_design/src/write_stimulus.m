@@ -29,7 +29,7 @@ cov=proposal_std;
 
 dimensions=[mcmc_iterations, particles, state_sequence, state_dimension, transition_parameters_known,...
     transition_parameters_unknown, observation_dimension, observation_parameters_known, observation_parameters_unknown, theta_dimension, seeds_dim, rng_init_cycles, 0, 0, 0];
-
+rng(user_seed+10);
 init_states=zeros(state_dimension,particles);
 for l=1:1:particles
     init_states(:,l)=state_prior_equation();

@@ -5,6 +5,8 @@ function [log_likelihood,particles_saved,weights] = bootstrap_filter(N,...
 
 global problem;
 
+load('static_parameters.mat','*known','*unknown');
+
 if (problem==0)
     
     log_likelihood_temp = zeros (1,state_count);
@@ -135,26 +137,68 @@ elseif (problem==1)
         % transition 
         %t
         %state_parameters_send(1)=state_parameters(t);
-        state_parameters_send(1)=state_parameters(t:max_state_sequence:(max_state_sequence*state_dim));
-        state_parameters_send(2)=state_parameters(state_param_fixed_dim + state_param_rand_dim);
-        state_param_fixed_dim_send=state_dim;
+        for q = 1:transition_parameters_known
+			fetched_state_parameters_fixed(1,q) = state_parameters(1,(q-1)*max_state_sequence+t);
+        end
         
-        particles = transition_equation_vector(state_dim, state_param_fixed_dim_send,...
-            state_param_rand_dim, state_parameters_send, particles);
+        for q = 1:transition_parameters_unknown
+            fetched_state_parameters_rand(1,q) = state_parameters(1,max_state_sequence*transition_parameters_known+q);
+        end
+        
+        for q = 1:observation_parameters_known
+			fetched_obs_parameters_fixed(1,q) = obs_parameters(1,(q-1)*max_state_sequence + t);
+        end
+        
+        for q = 1:observation_parameters_unknown
+            fetched_obs_parameters_rand(1,q) = obs_parameters(1,max_state_sequence*observation_parameters_known+q);
+        end
+        
+        for q = 1:obs_dim
+			fetched_data(1,q) = observations(1,(q-1)*max_state_sequence + t);
+        end
+        
+        %state_parameters_send(1)=state_parameters(t:max_state_sequence:(max_state_sequence*state_dim));
+        %state_parameters_send(2)=state_parameters(state_param_fixed_dim + state_param_rand_dim);
+        %state_param_fixed_dim_send=state_dim;
+        
+        particles = transition_density_vector(fetched_state_parameters_fixed, ...
+        fetched_state_parameters_rand, particles);
 
         
         % observation
-        obs_parameters_send(1, 1:obs_dim) = obs_parameters(1, t:max_state_sequence:(max_state_sequence*obs_dim));
+       % obs_parameters_send(1, 1:obs_dim) = obs_parameters(1, t:max_state_sequence:(max_state_sequence*obs_dim));
         %obs_parameters_send(1, 1:obs_dim) = obs_parameters(1, (obs_dim*(t-1)+1):(obs_dim*(t-1)+obs_dim) );
-        obs_parameters_send(1, obs_dim+1) = obs_parameters(1, obs_param_fixed_dim + obs_param_rand_dim);
-        obs_param_fixed_dim_send=obs_dim;
+        %obs_parameters_send(1, obs_dim+1) = obs_parameters(1, obs_param_fixed_dim + obs_param_rand_dim);
+        %obs_param_fixed_dim_send=obs_dim;
         
-        [L, scaling_factor] = likelihood_equation_vector(obs_dim,...
-            obs_param_fixed_dim_send, obs_param_rand_dim, obs_parameters_send,...
-            particles, observations(t,:)');
-               
-        log_lik_test = log(mean(L));
-        if (sum(L)==single(0))
+        LL_p = observation_density_vector(fetched_obs_parameters_fixed, fetched_obs_parameters_rand,...
+            fetched_data, particles);
+              
+        scaling_factor = max(LL_p);
+        if (scaling_factor == single(-1e30))
+        disp('sos');
+        end
+        
+        likelihoods = exp ( LL_p - scaling_factor );
+
+        if ~(all(~isnan(likelihoods)))
+            likelihoods(isnan(likelihoods)) = single(0);
+           % error('NaN sub-loglikelihood.')
+            %error(message('stats:randsample:InvalidWeights'));
+        end
+
+        if ~(all(~isinf(likelihoods)))
+            error('Inf sub-loglikelihood.')
+            %error(message('stats:randsample:InvalidWeights'));
+        end
+
+        if ~(sum(likelihoods) > 0) || ~all(likelihoods>=0) % catches NaNs
+                   error(message('stats:randsample:InvalidWeights'));
+        end
+                   
+        
+        log_lik_test = log(mean(likelihoods));
+        if (sum(likelihoods)==single(0))
             disp('0 Ws');
         end    
  
@@ -173,7 +217,7 @@ elseif (problem==1)
             log_likelihood_temp(t)=single(-1e30);
         end  
         %normalized weights
-        weights = L./sum(L);
+        weights = likelihoods./sum(likelihoods);
                 
         [max_value, index_saved] = max(weights);
         
