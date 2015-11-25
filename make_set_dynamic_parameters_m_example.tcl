@@ -70,7 +70,7 @@ for {set index 0} {$index < [expr $transition_parameters_unknown + $observation_
 		if {$index > 0} {
 			append tmp_line "," 
 		} 		
-		append tmp_line $index
+		append tmp_line "1"
 			
 }
 append tmp_line "\]; %fill in the standard deviation of the MCMC proposal (floating point values - non-negative)"
