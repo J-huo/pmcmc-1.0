@@ -13,7 +13,6 @@ set C_modelArgList {
 	{ obs_parameters_fixed float 32 regular {array 65536 { 1 3 } 1 1 }  }
 	{ obs_parameters_rand_0_read float 32 regular  }
 	{ data float 32 regular {array 65536 { 1 3 } 1 1 }  }
-	{ state_param_fixed_dim int 32 regular  }
 }
 set C_modelArgMapList {[ 
 	{ "Name" : "t", "interface" : "wire", "bitwidth" : 32} , 
@@ -21,10 +20,9 @@ set C_modelArgMapList {[
  	{ "Name" : "obs_parameters_fixed", "interface" : "memory", "bitwidth" : 32} , 
  	{ "Name" : "obs_parameters_rand_0_read", "interface" : "wire", "bitwidth" : 32} , 
  	{ "Name" : "data", "interface" : "memory", "bitwidth" : 32} , 
- 	{ "Name" : "state_param_fixed_dim", "interface" : "wire", "bitwidth" : 32} , 
  	{ "Name" : "ap_return", "interface" : "wire", "bitwidth" : 352} ]}
 # RTL Port declarations: 
-set portNum 32
+set portNum 31
 set portList { 
 	{ ap_clk sc_in sc_logic 1 clock -1 } 
 	{ ap_rst sc_in sc_logic 1 reset -1 active_high_sync } 
@@ -46,7 +44,6 @@ set portList {
 	{ data_address0 sc_out sc_lv 16 signal 4 } 
 	{ data_ce0 sc_out sc_logic 1 signal 4 } 
 	{ data_q0 sc_in sc_lv 32 signal 4 } 
-	{ state_param_fixed_dim sc_in sc_lv 32 signal 5 } 
 	{ ap_return_0 sc_out sc_lv 32 signal -1 } 
 	{ ap_return_1 sc_out sc_lv 32 signal -1 } 
 	{ ap_return_2 sc_out sc_lv 32 signal -1 } 
@@ -80,7 +77,6 @@ set NewPortList {[
  	{ "name": "data_address0", "direction": "out", "datatype": "sc_lv", "bitwidth":16, "type": "signal", "bundle":{"name": "data", "role": "address0" }} , 
  	{ "name": "data_ce0", "direction": "out", "datatype": "sc_logic", "bitwidth":1, "type": "signal", "bundle":{"name": "data", "role": "ce0" }} , 
  	{ "name": "data_q0", "direction": "in", "datatype": "sc_lv", "bitwidth":32, "type": "signal", "bundle":{"name": "data", "role": "q0" }} , 
- 	{ "name": "state_param_fixed_dim", "direction": "in", "datatype": "sc_lv", "bitwidth":32, "type": "signal", "bundle":{"name": "state_param_fixed_dim", "role": "default" }} , 
  	{ "name": "ap_return_0", "direction": "out", "datatype": "sc_lv", "bitwidth":32, "type": "signal", "bundle":{"name": "ap_return_0", "role": "default" }} , 
  	{ "name": "ap_return_1", "direction": "out", "datatype": "sc_lv", "bitwidth":32, "type": "signal", "bundle":{"name": "ap_return_1", "role": "default" }} , 
  	{ "name": "ap_return_2", "direction": "out", "datatype": "sc_lv", "bitwidth":32, "type": "signal", "bundle":{"name": "ap_return_2", "role": "default" }} , 
@@ -98,5 +94,4 @@ set Spec2ImplPortList {
 	obs_parameters_fixed { ap_memory {  { obs_parameters_fixed_address0 mem_address 1 16 }  { obs_parameters_fixed_ce0 mem_ce 1 1 }  { obs_parameters_fixed_q0 mem_dout 0 32 } } }
 	obs_parameters_rand_0_read { ap_none {  { obs_parameters_rand_0_read in_data 0 32 } } }
 	data { ap_memory {  { data_address0 mem_address 1 16 }  { data_ce0 mem_ce 1 1 }  { data_q0 mem_dout 0 32 } } }
-	state_param_fixed_dim { ap_none {  { state_param_fixed_dim in_data 0 32 } } }
 }

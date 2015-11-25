@@ -53584,7 +53584,7 @@ void mcmc_iteration(data_t *current_mcmc_state, data_t *proposed_mcmc_state, dat
   state_param_prop_loop: for (unsigned int i=0;i<state_param_rand_dim;i++)
     {_ssdm_op_SpecLoopName("state_param_prop_loop");_ssdm_RegionBegin("state_param_prop_loop");
 # 64 "../../src/mcmc_iteration.cpp"
-state_parameters[state_param_fixed_dim+i] = proposed_mcmc_state_exp[i];_ssdm_RegionEnd("state_param_prop_loop");}
+state_parameters[state_param_fixed_dim_max_size+i] = proposed_mcmc_state_exp[i];_ssdm_RegionEnd("state_param_prop_loop");}
 
   obs_param_prop_loop: for (unsigned int i=0;i<obs_param_rand_dim;i++)
    {_ssdm_op_SpecLoopName("obs_param_prop_loop");_ssdm_RegionBegin("obs_param_prop_loop");

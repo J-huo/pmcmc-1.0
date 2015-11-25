@@ -97,21 +97,6 @@ eval "cg_default_interface_gen_dc { \
 # Direct connection:
 if {${::AESL::PGuard_autoexp_gen}} {
 eval "cg_default_interface_gen_dc { \
-    id 16 \
-    name state_param_fixed_dim \
-    type other \
-    dir I \
-    reset_level 1 \
-    sync_rst true \
-    corename dc_state_param_fixed_dim \
-    op interface \
-    ports { state_param_fixed_dim { I 32 vector } } \
-} "
-}
-
-# Direct connection:
-if {${::AESL::PGuard_autoexp_gen}} {
-eval "cg_default_interface_gen_dc { \
     id -1 \
     name ap_ctrl \
     type ap_ctrl \

@@ -419,7 +419,7 @@ approx::approx(sc_module_name name) : sc_module(name), mVcdFile(0) {
     sensitive << ( u2_read_reg_447 );
 
     SC_METHOD(thread_tmp_30_fu_442_p1);
-    sensitive << ( tmp_611_neg_fu_436_p2 );
+    sensitive << ( tmp_610_neg_fu_436_p2 );
 
     SC_METHOD(thread_tmp_31_phi_fu_344_p4);
     sensitive << ( ap_reg_ppstg_tmp_40_reg_468_pp0_it34 );
@@ -430,10 +430,10 @@ approx::approx(sc_module_name name) : sc_module(name), mVcdFile(0) {
     SC_METHOD(thread_tmp_5_fu_411_p4);
     sensitive << ( ap_reg_phiprechg_segment_reg_208pp0_it9 );
 
-    SC_METHOD(thread_tmp_611_neg_fu_436_p2);
-    sensitive << ( tmp_611_to_int_fu_433_p1 );
+    SC_METHOD(thread_tmp_610_neg_fu_436_p2);
+    sensitive << ( tmp_610_to_int_fu_433_p1 );
 
-    SC_METHOD(thread_tmp_611_to_int_fu_433_p1);
+    SC_METHOD(thread_tmp_610_to_int_fu_433_p1);
     sensitive << ( a00_reg_534 );
 
     SC_METHOD(thread_tmp_s_fu_428_p1);
@@ -668,8 +668,8 @@ approx::approx(sc_module_name name) : sc_module(name), mVcdFile(0) {
     sc_trace(mVcdFile, f_fu_390_p4, "f_fu_390_p4");
     sc_trace(mVcdFile, tmp_5_fu_411_p4, "tmp_5_fu_411_p4");
     sc_trace(mVcdFile, i_fu_421_p3, "i_fu_421_p3");
-    sc_trace(mVcdFile, tmp_611_to_int_fu_433_p1, "tmp_611_to_int_fu_433_p1");
-    sc_trace(mVcdFile, tmp_611_neg_fu_436_p2, "tmp_611_neg_fu_436_p2");
+    sc_trace(mVcdFile, tmp_610_to_int_fu_433_p1, "tmp_610_to_int_fu_433_p1");
+    sc_trace(mVcdFile, tmp_610_neg_fu_436_p2, "tmp_610_neg_fu_436_p2");
     sc_trace(mVcdFile, grp_fu_351_ce, "grp_fu_351_ce");
     sc_trace(mVcdFile, grp_fu_355_ce, "grp_fu_355_ce");
     sc_trace(mVcdFile, grp_fu_359_ce, "grp_fu_359_ce");
@@ -1526,7 +1526,7 @@ void approx::thread_o_fu_387_p1() {
 }
 
 void approx::thread_tmp_30_fu_442_p1() {
-    tmp_30_fu_442_p1 = tmp_611_neg_fu_436_p2.read();
+    tmp_30_fu_442_p1 = tmp_610_neg_fu_436_p2.read();
 }
 
 void approx::thread_tmp_31_phi_fu_344_p4() {
@@ -1547,12 +1547,12 @@ void approx::thread_tmp_5_fu_411_p4() {
     tmp_5_fu_411_p4 = ap_reg_phiprechg_segment_reg_208pp0_it9.read().range(9, 5);
 }
 
-void approx::thread_tmp_611_neg_fu_436_p2() {
-    tmp_611_neg_fu_436_p2 = (tmp_611_to_int_fu_433_p1.read() ^ ap_const_lv32_80000000);
+void approx::thread_tmp_610_neg_fu_436_p2() {
+    tmp_610_neg_fu_436_p2 = (tmp_610_to_int_fu_433_p1.read() ^ ap_const_lv32_80000000);
 }
 
-void approx::thread_tmp_611_to_int_fu_433_p1() {
-    tmp_611_to_int_fu_433_p1 = a00_reg_534.read();
+void approx::thread_tmp_610_to_int_fu_433_p1() {
+    tmp_610_to_int_fu_433_p1 = a00_reg_534.read();
 }
 
 void approx::thread_tmp_s_fu_428_p1() {

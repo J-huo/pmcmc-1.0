@@ -50259,7 +50259,7 @@ void fetch_data_parameters(data_t *fetched_state_parameters_fixed, data_t *fetch
 #pragma empty_line
 #pragma empty_line
   for (uint32_t q=0; q<state_param_rand_dim; q++){
-   fetched_state_parameters_rand[q] = state_parameters[state_param_fixed_dim+q];
+   fetched_state_parameters_rand[q] = state_parameters[state_param_fixed_dim_max_size+q];
   }
 #pragma empty_line
 #pragma empty_line

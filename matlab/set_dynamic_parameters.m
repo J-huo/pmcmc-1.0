@@ -1,9 +1,9 @@
-state_sequence = 256;
-particles = 1024;
+state_sequence = 400;
+particles = 2048;
 prior_parameter_values = [1.2, 100, 1, 100, 0];
-mcmc_iterations = 100; %number of MCMC iterations
-initial_mcmc_sample = [4, 0.1];%[3.2680 1.3049];%[8, 3]; % initial theta values
-proposal_std = [0.4, 0.4];
+mcmc_iterations = 50; %number of MCMC iterations
+initial_mcmc_sample = [2.8, 0.4];%[3.2680 1.3049];%[8, 3]; % initial theta values
+proposal_std = [0.3, 0.3];
 user_seed = 235678; %non-negative integer
 
 

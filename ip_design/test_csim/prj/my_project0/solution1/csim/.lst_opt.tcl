@@ -1,3 +1,3 @@
-set useapcc 0
+set useapcc 1
 set opt 0
-set setup 1
+set setup 0

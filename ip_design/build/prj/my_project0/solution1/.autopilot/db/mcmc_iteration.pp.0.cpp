@@ -53505,7 +53505,7 @@ void mcmc_iteration(data_t *current_mcmc_state, data_t *proposed_mcmc_state, dat
 
   //write proposed parameters to state and observation memories
   state_param_prop_loop: for (unsigned int i=0;i<state_param_rand_dim;i++)
-    state_parameters[state_param_fixed_dim+i] = proposed_mcmc_state_exp[i];
+    state_parameters[state_param_fixed_dim_max_size+i] = proposed_mcmc_state_exp[i];
 
   obs_param_prop_loop: for (unsigned int i=0;i<obs_param_rand_dim;i++)
    obs_parameters_rand[i] = proposed_mcmc_state_exp[state_param_rand_dim+i];

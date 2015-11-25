@@ -6,41 +6,6 @@
 ================================================================
 @I [LIC-101] Checked out feature [HLS]
 @I [HLS-10] Running 'C:/Xilinx/Vivado_HLS/2014.1/bin/unwrapped/win64.o/vivado_hls.exe'
-            for user 'fr909' on host 'ee-gm210' (Windows NT_amd64 version 6.1) on Mon Nov 23 18:21:24 +0000 2015
+            for user 'fr909' on host 'ee-gm210' (Windows NT_amd64 version 6.1) on Wed Nov 25 17:07:16 +0000 2015
             in directory 'C:/Users/fr909/Desktop/pmcmc-1.0'
-@I [HLS-10] Opening and resetting project 'C:/Users/fr909/Desktop/pmcmc-1.0/ip_design/test_csim/prj/my_project0'.
-@I [HLS-10] Adding design file '../../src/foo_data.h' to the project
-@I [HLS-10] Adding design file '../../src/foo_mem_parameters.h' to the project
-@I [HLS-10] Adding design file '../../src/rngs.h' to the project
-@I [HLS-10] Adding design file '../../src/rngs.cpp' to the project
-@I [HLS-10] Adding design file '../../src/fetch.h' to the project
-@I [HLS-10] Adding design file '../../src/fetch.cpp' to the project
-@I [HLS-10] Adding design file '../../src/transition_density.h' to the project
-@I [HLS-10] Adding design file '../../src/transition_density.cpp' to the project
-@I [HLS-10] Adding design file '../../src/observation_density.h' to the project
-@I [HLS-10] Adding design file '../../src/observation_density.cpp' to the project
-@I [HLS-10] Adding design file '../../src/particle_filter.cpp' to the project
-@I [HLS-10] Adding design file '../../src/prior.h' to the project
-@I [HLS-10] Adding design file '../../src/prior.cpp' to the project
-@I [HLS-10] Adding design file '../../src/mcmc_iteration.h' to the project
-@I [HLS-10] Adding design file '../../src/mcmc_iteration.cpp' to the project
-@I [HLS-10] Adding design file '../../src/foo.h' to the project
-@I [HLS-10] Adding design file '../../src/foo.cpp' to the project
-@I [HLS-10] Adding test bench file '../../src/foo_test.cpp' to the project
-@I [HLS-10] Adding test bench file '../../src/inputs_in.dat' to the project
-@I [HLS-10] Opening and resetting solution 'C:/Users/fr909/Desktop/pmcmc-1.0/ip_design/test_csim/prj/my_project0/solution1'.
-@I [HLS-10] Cleaning up the solution database.
-@I [HLS-10] Setting target device to '{xc7z045ffg900-2}'
-@I [SYN-201] Setting up clock 'default' with a period of 6ns.
-   Compiling ../../../../../../src/foo_test.cpp in debug mode
-   Compiling ../../../../../../src/foo.cpp in debug mode
-   Compiling ../../../../../../src/mcmc_iteration.cpp in debug mode
-   Compiling ../../../../../../src/prior.cpp in debug mode
-   Compiling ../../../../../../src/particle_filter.cpp in debug mode
-   Compiling ../../../../../../src/observation_density.cpp in debug mode
-   Compiling ../../../../../../src/transition_density.cpp in debug mode
-   Compiling ../../../../../../src/fetch.cpp in debug mode
-   Compiling ../../../../../../src/rngs.cpp in debug mode
-   Generating csim.exe
-@I [SIM-1] CSim done with 0 errors.
 @I [LIC-101] Checked in feature [HLS]

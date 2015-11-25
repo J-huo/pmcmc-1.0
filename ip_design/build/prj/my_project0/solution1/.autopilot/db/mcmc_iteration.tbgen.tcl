@@ -38,7 +38,6 @@ set C_modelArgList {
 	{ replication_factors_0 int 16 regular {array 8192 { 2 0 } 1 1 }  }
 	{ replication_factors_1 int 16 regular {array 8192 { 2 0 } 1 1 }  }
 	{ state_count int 32 regular  }
-	{ state_param_fixed_dim int 32 regular  }
 	{ state_parameters float 32 regular {array 16385 { 2 1 } 1 1 }  }
 	{ obs_parameters_fixed float 32 regular {array 65536 { 1 3 } 1 1 }  }
 	{ data float 32 regular {array 65536 { 1 3 } 1 1 }  }
@@ -162,7 +161,6 @@ set C_modelArgMapList {[
  	{ "Name" : "replication_factors_0", "interface" : "memory", "bitwidth" : 16} , 
  	{ "Name" : "replication_factors_1", "interface" : "memory", "bitwidth" : 16} , 
  	{ "Name" : "state_count", "interface" : "wire", "bitwidth" : 32} , 
- 	{ "Name" : "state_param_fixed_dim", "interface" : "wire", "bitwidth" : 32} , 
  	{ "Name" : "state_parameters", "interface" : "memory", "bitwidth" : 32} , 
  	{ "Name" : "obs_parameters_fixed", "interface" : "memory", "bitwidth" : 32} , 
  	{ "Name" : "data", "interface" : "memory", "bitwidth" : 32} , 
@@ -256,7 +254,7 @@ set C_modelArgMapList {[
  	{ "Name" : "rng_state_21_offset_read", "interface" : "wire", "bitwidth" : 32} , 
  	{ "Name" : "ap_return", "interface" : "wire", "bitwidth" : 3072} ]}
 # RTL Port declarations: 
-set portNum 334
+set portNum 333
 set portList { 
 	{ ap_clk sc_in sc_logic 1 clock -1 } 
 	{ ap_rst sc_in sc_logic 1 reset -1 active_high_sync } 
@@ -393,109 +391,108 @@ set portList {
 	{ replication_factors_1_we1 sc_out sc_logic 1 signal 28 } 
 	{ replication_factors_1_d1 sc_out sc_lv 16 signal 28 } 
 	{ state_count sc_in sc_lv 32 signal 29 } 
-	{ state_param_fixed_dim sc_in sc_lv 32 signal 30 } 
-	{ state_parameters_address0 sc_out sc_lv 15 signal 31 } 
-	{ state_parameters_ce0 sc_out sc_logic 1 signal 31 } 
-	{ state_parameters_we0 sc_out sc_logic 1 signal 31 } 
-	{ state_parameters_d0 sc_out sc_lv 32 signal 31 } 
-	{ state_parameters_q0 sc_in sc_lv 32 signal 31 } 
-	{ state_parameters_address1 sc_out sc_lv 15 signal 31 } 
-	{ state_parameters_ce1 sc_out sc_logic 1 signal 31 } 
-	{ state_parameters_q1 sc_in sc_lv 32 signal 31 } 
-	{ obs_parameters_fixed_address0 sc_out sc_lv 16 signal 32 } 
-	{ obs_parameters_fixed_ce0 sc_out sc_logic 1 signal 32 } 
-	{ obs_parameters_fixed_q0 sc_in sc_lv 32 signal 32 } 
-	{ data_address0 sc_out sc_lv 16 signal 33 } 
-	{ data_ce0 sc_out sc_logic 1 signal 33 } 
-	{ data_q0 sc_in sc_lv 32 signal 33 } 
-	{ rng_state_0_s1_read sc_in sc_lv 32 signal 34 } 
-	{ rng_state_1_s1_read sc_in sc_lv 32 signal 35 } 
-	{ rng_state_2_s1_read sc_in sc_lv 32 signal 36 } 
-	{ rng_state_3_s1_read sc_in sc_lv 32 signal 37 } 
-	{ rng_state_4_s1_read sc_in sc_lv 32 signal 38 } 
-	{ rng_state_5_s1_read sc_in sc_lv 32 signal 39 } 
-	{ rng_state_6_s1_read sc_in sc_lv 32 signal 40 } 
-	{ rng_state_7_s1_read sc_in sc_lv 32 signal 41 } 
-	{ rng_state_8_s1_read sc_in sc_lv 32 signal 42 } 
-	{ rng_state_9_s1_read sc_in sc_lv 32 signal 43 } 
-	{ rng_state_10_s1_read sc_in sc_lv 32 signal 44 } 
-	{ rng_state_11_s1_read sc_in sc_lv 32 signal 45 } 
-	{ rng_state_12_s1_read sc_in sc_lv 32 signal 46 } 
-	{ rng_state_13_s1_read sc_in sc_lv 32 signal 47 } 
-	{ rng_state_14_s1_read sc_in sc_lv 32 signal 48 } 
-	{ rng_state_15_s1_read sc_in sc_lv 32 signal 49 } 
-	{ rng_state_16_s1_read sc_in sc_lv 32 signal 50 } 
-	{ rng_state_17_s1_read sc_in sc_lv 32 signal 51 } 
-	{ rng_state_18_s1_read sc_in sc_lv 32 signal 52 } 
-	{ rng_state_19_s1_read sc_in sc_lv 32 signal 53 } 
-	{ rng_state_20_s1_read sc_in sc_lv 32 signal 54 } 
-	{ rng_state_21_s1_read sc_in sc_lv 32 signal 55 } 
-	{ rng_state_0_s2_read sc_in sc_lv 32 signal 56 } 
-	{ rng_state_1_s2_read sc_in sc_lv 32 signal 57 } 
-	{ rng_state_2_s2_read sc_in sc_lv 32 signal 58 } 
-	{ rng_state_3_s2_read sc_in sc_lv 32 signal 59 } 
-	{ rng_state_4_s2_read sc_in sc_lv 32 signal 60 } 
-	{ rng_state_5_s2_read sc_in sc_lv 32 signal 61 } 
-	{ rng_state_6_s2_read sc_in sc_lv 32 signal 62 } 
-	{ rng_state_7_s2_read sc_in sc_lv 32 signal 63 } 
-	{ rng_state_8_s2_read sc_in sc_lv 32 signal 64 } 
-	{ rng_state_9_s2_read sc_in sc_lv 32 signal 65 } 
-	{ rng_state_10_s2_read sc_in sc_lv 32 signal 66 } 
-	{ rng_state_11_s2_read sc_in sc_lv 32 signal 67 } 
-	{ rng_state_12_s2_read sc_in sc_lv 32 signal 68 } 
-	{ rng_state_13_s2_read sc_in sc_lv 32 signal 69 } 
-	{ rng_state_14_s2_read sc_in sc_lv 32 signal 70 } 
-	{ rng_state_15_s2_read sc_in sc_lv 32 signal 71 } 
-	{ rng_state_16_s2_read sc_in sc_lv 32 signal 72 } 
-	{ rng_state_17_s2_read sc_in sc_lv 32 signal 73 } 
-	{ rng_state_18_s2_read sc_in sc_lv 32 signal 74 } 
-	{ rng_state_19_s2_read sc_in sc_lv 32 signal 75 } 
-	{ rng_state_20_s2_read sc_in sc_lv 32 signal 76 } 
-	{ rng_state_21_s2_read sc_in sc_lv 32 signal 77 } 
-	{ rng_state_0_s3_read sc_in sc_lv 32 signal 78 } 
-	{ rng_state_1_s3_read sc_in sc_lv 32 signal 79 } 
-	{ rng_state_2_s3_read sc_in sc_lv 32 signal 80 } 
-	{ rng_state_3_s3_read sc_in sc_lv 32 signal 81 } 
-	{ rng_state_4_s3_read sc_in sc_lv 32 signal 82 } 
-	{ rng_state_5_s3_read sc_in sc_lv 32 signal 83 } 
-	{ rng_state_6_s3_read sc_in sc_lv 32 signal 84 } 
-	{ rng_state_7_s3_read sc_in sc_lv 32 signal 85 } 
-	{ rng_state_8_s3_read sc_in sc_lv 32 signal 86 } 
-	{ rng_state_9_s3_read sc_in sc_lv 32 signal 87 } 
-	{ rng_state_10_s3_read sc_in sc_lv 32 signal 88 } 
-	{ rng_state_11_s3_read sc_in sc_lv 32 signal 89 } 
-	{ rng_state_12_s3_read sc_in sc_lv 32 signal 90 } 
-	{ rng_state_13_s3_read sc_in sc_lv 32 signal 91 } 
-	{ rng_state_14_s3_read sc_in sc_lv 32 signal 92 } 
-	{ rng_state_15_s3_read sc_in sc_lv 32 signal 93 } 
-	{ rng_state_16_s3_read sc_in sc_lv 32 signal 94 } 
-	{ rng_state_17_s3_read sc_in sc_lv 32 signal 95 } 
-	{ rng_state_18_s3_read sc_in sc_lv 32 signal 96 } 
-	{ rng_state_19_s3_read sc_in sc_lv 32 signal 97 } 
-	{ rng_state_20_s3_read sc_in sc_lv 32 signal 98 } 
-	{ rng_state_21_s3_read sc_in sc_lv 32 signal 99 } 
-	{ rng_state_0_offset_read sc_in sc_lv 32 signal 100 } 
-	{ rng_state_1_offset_read sc_in sc_lv 32 signal 101 } 
-	{ rng_state_2_offset_read sc_in sc_lv 32 signal 102 } 
-	{ rng_state_3_offset_read sc_in sc_lv 32 signal 103 } 
-	{ rng_state_4_offset_read sc_in sc_lv 32 signal 104 } 
-	{ rng_state_5_offset_read sc_in sc_lv 32 signal 105 } 
-	{ rng_state_6_offset_read sc_in sc_lv 32 signal 106 } 
-	{ rng_state_7_offset_read sc_in sc_lv 32 signal 107 } 
-	{ rng_state_8_offset_read sc_in sc_lv 32 signal 108 } 
-	{ rng_state_9_offset_read sc_in sc_lv 32 signal 109 } 
-	{ rng_state_10_offset_read sc_in sc_lv 32 signal 110 } 
-	{ rng_state_11_offset_read sc_in sc_lv 32 signal 111 } 
-	{ rng_state_12_offset_read sc_in sc_lv 32 signal 112 } 
-	{ rng_state_13_offset_read sc_in sc_lv 32 signal 113 } 
-	{ rng_state_14_offset_read sc_in sc_lv 32 signal 114 } 
-	{ rng_state_15_offset_read sc_in sc_lv 32 signal 115 } 
-	{ rng_state_16_offset_read sc_in sc_lv 32 signal 116 } 
-	{ rng_state_17_offset_read sc_in sc_lv 32 signal 117 } 
-	{ rng_state_18_offset_read sc_in sc_lv 32 signal 118 } 
-	{ rng_state_19_offset_read sc_in sc_lv 32 signal 119 } 
-	{ rng_state_20_offset_read sc_in sc_lv 32 signal 120 } 
-	{ rng_state_21_offset_read sc_in sc_lv 32 signal 121 } 
+	{ state_parameters_address0 sc_out sc_lv 15 signal 30 } 
+	{ state_parameters_ce0 sc_out sc_logic 1 signal 30 } 
+	{ state_parameters_we0 sc_out sc_logic 1 signal 30 } 
+	{ state_parameters_d0 sc_out sc_lv 32 signal 30 } 
+	{ state_parameters_q0 sc_in sc_lv 32 signal 30 } 
+	{ state_parameters_address1 sc_out sc_lv 15 signal 30 } 
+	{ state_parameters_ce1 sc_out sc_logic 1 signal 30 } 
+	{ state_parameters_q1 sc_in sc_lv 32 signal 30 } 
+	{ obs_parameters_fixed_address0 sc_out sc_lv 16 signal 31 } 
+	{ obs_parameters_fixed_ce0 sc_out sc_logic 1 signal 31 } 
+	{ obs_parameters_fixed_q0 sc_in sc_lv 32 signal 31 } 
+	{ data_address0 sc_out sc_lv 16 signal 32 } 
+	{ data_ce0 sc_out sc_logic 1 signal 32 } 
+	{ data_q0 sc_in sc_lv 32 signal 32 } 
+	{ rng_state_0_s1_read sc_in sc_lv 32 signal 33 } 
+	{ rng_state_1_s1_read sc_in sc_lv 32 signal 34 } 
+	{ rng_state_2_s1_read sc_in sc_lv 32 signal 35 } 
+	{ rng_state_3_s1_read sc_in sc_lv 32 signal 36 } 
+	{ rng_state_4_s1_read sc_in sc_lv 32 signal 37 } 
+	{ rng_state_5_s1_read sc_in sc_lv 32 signal 38 } 
+	{ rng_state_6_s1_read sc_in sc_lv 32 signal 39 } 
+	{ rng_state_7_s1_read sc_in sc_lv 32 signal 40 } 
+	{ rng_state_8_s1_read sc_in sc_lv 32 signal 41 } 
+	{ rng_state_9_s1_read sc_in sc_lv 32 signal 42 } 
+	{ rng_state_10_s1_read sc_in sc_lv 32 signal 43 } 
+	{ rng_state_11_s1_read sc_in sc_lv 32 signal 44 } 
+	{ rng_state_12_s1_read sc_in sc_lv 32 signal 45 } 
+	{ rng_state_13_s1_read sc_in sc_lv 32 signal 46 } 
+	{ rng_state_14_s1_read sc_in sc_lv 32 signal 47 } 
+	{ rng_state_15_s1_read sc_in sc_lv 32 signal 48 } 
+	{ rng_state_16_s1_read sc_in sc_lv 32 signal 49 } 
+	{ rng_state_17_s1_read sc_in sc_lv 32 signal 50 } 
+	{ rng_state_18_s1_read sc_in sc_lv 32 signal 51 } 
+	{ rng_state_19_s1_read sc_in sc_lv 32 signal 52 } 
+	{ rng_state_20_s1_read sc_in sc_lv 32 signal 53 } 
+	{ rng_state_21_s1_read sc_in sc_lv 32 signal 54 } 
+	{ rng_state_0_s2_read sc_in sc_lv 32 signal 55 } 
+	{ rng_state_1_s2_read sc_in sc_lv 32 signal 56 } 
+	{ rng_state_2_s2_read sc_in sc_lv 32 signal 57 } 
+	{ rng_state_3_s2_read sc_in sc_lv 32 signal 58 } 
+	{ rng_state_4_s2_read sc_in sc_lv 32 signal 59 } 
+	{ rng_state_5_s2_read sc_in sc_lv 32 signal 60 } 
+	{ rng_state_6_s2_read sc_in sc_lv 32 signal 61 } 
+	{ rng_state_7_s2_read sc_in sc_lv 32 signal 62 } 
+	{ rng_state_8_s2_read sc_in sc_lv 32 signal 63 } 
+	{ rng_state_9_s2_read sc_in sc_lv 32 signal 64 } 
+	{ rng_state_10_s2_read sc_in sc_lv 32 signal 65 } 
+	{ rng_state_11_s2_read sc_in sc_lv 32 signal 66 } 
+	{ rng_state_12_s2_read sc_in sc_lv 32 signal 67 } 
+	{ rng_state_13_s2_read sc_in sc_lv 32 signal 68 } 
+	{ rng_state_14_s2_read sc_in sc_lv 32 signal 69 } 
+	{ rng_state_15_s2_read sc_in sc_lv 32 signal 70 } 
+	{ rng_state_16_s2_read sc_in sc_lv 32 signal 71 } 
+	{ rng_state_17_s2_read sc_in sc_lv 32 signal 72 } 
+	{ rng_state_18_s2_read sc_in sc_lv 32 signal 73 } 
+	{ rng_state_19_s2_read sc_in sc_lv 32 signal 74 } 
+	{ rng_state_20_s2_read sc_in sc_lv 32 signal 75 } 
+	{ rng_state_21_s2_read sc_in sc_lv 32 signal 76 } 
+	{ rng_state_0_s3_read sc_in sc_lv 32 signal 77 } 
+	{ rng_state_1_s3_read sc_in sc_lv 32 signal 78 } 
+	{ rng_state_2_s3_read sc_in sc_lv 32 signal 79 } 
+	{ rng_state_3_s3_read sc_in sc_lv 32 signal 80 } 
+	{ rng_state_4_s3_read sc_in sc_lv 32 signal 81 } 
+	{ rng_state_5_s3_read sc_in sc_lv 32 signal 82 } 
+	{ rng_state_6_s3_read sc_in sc_lv 32 signal 83 } 
+	{ rng_state_7_s3_read sc_in sc_lv 32 signal 84 } 
+	{ rng_state_8_s3_read sc_in sc_lv 32 signal 85 } 
+	{ rng_state_9_s3_read sc_in sc_lv 32 signal 86 } 
+	{ rng_state_10_s3_read sc_in sc_lv 32 signal 87 } 
+	{ rng_state_11_s3_read sc_in sc_lv 32 signal 88 } 
+	{ rng_state_12_s3_read sc_in sc_lv 32 signal 89 } 
+	{ rng_state_13_s3_read sc_in sc_lv 32 signal 90 } 
+	{ rng_state_14_s3_read sc_in sc_lv 32 signal 91 } 
+	{ rng_state_15_s3_read sc_in sc_lv 32 signal 92 } 
+	{ rng_state_16_s3_read sc_in sc_lv 32 signal 93 } 
+	{ rng_state_17_s3_read sc_in sc_lv 32 signal 94 } 
+	{ rng_state_18_s3_read sc_in sc_lv 32 signal 95 } 
+	{ rng_state_19_s3_read sc_in sc_lv 32 signal 96 } 
+	{ rng_state_20_s3_read sc_in sc_lv 32 signal 97 } 
+	{ rng_state_21_s3_read sc_in sc_lv 32 signal 98 } 
+	{ rng_state_0_offset_read sc_in sc_lv 32 signal 99 } 
+	{ rng_state_1_offset_read sc_in sc_lv 32 signal 100 } 
+	{ rng_state_2_offset_read sc_in sc_lv 32 signal 101 } 
+	{ rng_state_3_offset_read sc_in sc_lv 32 signal 102 } 
+	{ rng_state_4_offset_read sc_in sc_lv 32 signal 103 } 
+	{ rng_state_5_offset_read sc_in sc_lv 32 signal 104 } 
+	{ rng_state_6_offset_read sc_in sc_lv 32 signal 105 } 
+	{ rng_state_7_offset_read sc_in sc_lv 32 signal 106 } 
+	{ rng_state_8_offset_read sc_in sc_lv 32 signal 107 } 
+	{ rng_state_9_offset_read sc_in sc_lv 32 signal 108 } 
+	{ rng_state_10_offset_read sc_in sc_lv 32 signal 109 } 
+	{ rng_state_11_offset_read sc_in sc_lv 32 signal 110 } 
+	{ rng_state_12_offset_read sc_in sc_lv 32 signal 111 } 
+	{ rng_state_13_offset_read sc_in sc_lv 32 signal 112 } 
+	{ rng_state_14_offset_read sc_in sc_lv 32 signal 113 } 
+	{ rng_state_15_offset_read sc_in sc_lv 32 signal 114 } 
+	{ rng_state_16_offset_read sc_in sc_lv 32 signal 115 } 
+	{ rng_state_17_offset_read sc_in sc_lv 32 signal 116 } 
+	{ rng_state_18_offset_read sc_in sc_lv 32 signal 117 } 
+	{ rng_state_19_offset_read sc_in sc_lv 32 signal 118 } 
+	{ rng_state_20_offset_read sc_in sc_lv 32 signal 119 } 
+	{ rng_state_21_offset_read sc_in sc_lv 32 signal 120 } 
 	{ ap_return_0 sc_out sc_lv 32 signal -1 } 
 	{ ap_return_1 sc_out sc_lv 32 signal -1 } 
 	{ ap_return_2 sc_out sc_lv 32 signal -1 } 
@@ -729,7 +726,6 @@ set NewPortList {[
  	{ "name": "replication_factors_1_we1", "direction": "out", "datatype": "sc_logic", "bitwidth":1, "type": "signal", "bundle":{"name": "replication_factors_1", "role": "we1" }} , 
  	{ "name": "replication_factors_1_d1", "direction": "out", "datatype": "sc_lv", "bitwidth":16, "type": "signal", "bundle":{"name": "replication_factors_1", "role": "d1" }} , 
  	{ "name": "state_count", "direction": "in", "datatype": "sc_lv", "bitwidth":32, "type": "signal", "bundle":{"name": "state_count", "role": "default" }} , 
- 	{ "name": "state_param_fixed_dim", "direction": "in", "datatype": "sc_lv", "bitwidth":32, "type": "signal", "bundle":{"name": "state_param_fixed_dim", "role": "default" }} , 
  	{ "name": "state_parameters_address0", "direction": "out", "datatype": "sc_lv", "bitwidth":15, "type": "signal", "bundle":{"name": "state_parameters", "role": "address0" }} , 
  	{ "name": "state_parameters_ce0", "direction": "out", "datatype": "sc_logic", "bitwidth":1, "type": "signal", "bundle":{"name": "state_parameters", "role": "ce0" }} , 
  	{ "name": "state_parameters_we0", "direction": "out", "datatype": "sc_logic", "bitwidth":1, "type": "signal", "bundle":{"name": "state_parameters", "role": "we0" }} , 
@@ -959,7 +955,6 @@ set Spec2ImplPortList {
 	replication_factors_0 { ap_memory {  { replication_factors_0_address0 mem_address 1 13 }  { replication_factors_0_ce0 mem_ce 1 1 }  { replication_factors_0_we0 mem_we 1 1 }  { replication_factors_0_d0 mem_din 1 16 }  { replication_factors_0_q0 mem_dout 0 16 }  { replication_factors_0_address1 mem_address 1 13 }  { replication_factors_0_ce1 mem_ce 1 1 }  { replication_factors_0_we1 mem_we 1 1 }  { replication_factors_0_d1 mem_din 1 16 } } }
 	replication_factors_1 { ap_memory {  { replication_factors_1_address0 mem_address 1 13 }  { replication_factors_1_ce0 mem_ce 1 1 }  { replication_factors_1_we0 mem_we 1 1 }  { replication_factors_1_d0 mem_din 1 16 }  { replication_factors_1_q0 mem_dout 0 16 }  { replication_factors_1_address1 mem_address 1 13 }  { replication_factors_1_ce1 mem_ce 1 1 }  { replication_factors_1_we1 mem_we 1 1 }  { replication_factors_1_d1 mem_din 1 16 } } }
 	state_count { ap_none {  { state_count in_data 0 32 } } }
-	state_param_fixed_dim { ap_none {  { state_param_fixed_dim in_data 0 32 } } }
 	state_parameters { ap_memory {  { state_parameters_address0 mem_address 1 15 }  { state_parameters_ce0 mem_ce 1 1 }  { state_parameters_we0 mem_we 1 1 }  { state_parameters_d0 mem_din 1 32 }  { state_parameters_q0 mem_dout 0 32 }  { state_parameters_address1 mem_address 1 15 }  { state_parameters_ce1 mem_ce 1 1 }  { state_parameters_q1 mem_dout 0 32 } } }
 	obs_parameters_fixed { ap_memory {  { obs_parameters_fixed_address0 mem_address 1 16 }  { obs_parameters_fixed_ce0 mem_ce 1 1 }  { obs_parameters_fixed_q0 mem_dout 0 32 } } }
 	data { ap_memory {  { data_address0 mem_address 1 16 }  { data_ce0 mem_ce 1 1 }  { data_q0 mem_dout 0 32 } } }

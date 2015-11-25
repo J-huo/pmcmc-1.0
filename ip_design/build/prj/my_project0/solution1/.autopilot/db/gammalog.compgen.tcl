@@ -1,7 +1,7 @@
 # This script segment is generated automatically by AutoPilot
 
 # Memory (RAM/ROM)  definition:
-set ID 318
+set ID 316
 set MemName gammalog_cof
 set CoreName ap_simcore_mem
 set PortList { 1 }
@@ -89,7 +89,7 @@ if {${::AESL::PGuard_autoexp_gen}} {
 # Direct connection:
 if {${::AESL::PGuard_autoexp_gen}} {
 eval "cg_default_interface_gen_dc { \
-    id 319 \
+    id 317 \
     name x \
     type other \
     dir I \
@@ -104,7 +104,7 @@ eval "cg_default_interface_gen_dc { \
 # Direct connection:
 if {${::AESL::PGuard_autoexp_gen}} {
 eval "cg_default_interface_gen_dc { \
-    id 320 \
+    id 318 \
     name a \
     type other \
     dir I \
@@ -119,7 +119,7 @@ eval "cg_default_interface_gen_dc { \
 # Direct connection:
 if {${::AESL::PGuard_autoexp_gen}} {
 eval "cg_default_interface_gen_dc { \
-    id 321 \
+    id 319 \
     name b \
     type other \
     dir I \
