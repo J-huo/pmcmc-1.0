@@ -64,6 +64,7 @@ if (software_sim == 1)
 
 end
 
+if (software_sim == 1)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%save outputs_in_log
 	filename = strcat('../', sim_type, '/results/matlab_outputs_out_log.dat');
@@ -75,7 +76,8 @@ end
 	fprintf(fid, '\n');
 
 	fclose(fid);
-   
+end
+
     gap = theta_dimension + 3 + state_sequence*state_dimension;
     full = mcmc_iterations * (theta_dimension + 3 + state_sequence*state_dimension);
     
@@ -98,45 +100,49 @@ end
     filename = strcat('../', sim_type, '/results/posteriors_log_fpga.mat');
     save(filename,'posteriors_log_fpga');
        
-    particles_log_fpga = NaN(state_sequence,mcmc_iterations);
-    for i=1:1:state_sequence
-    particles_log_fpga(i,:) = outputs_out((theta_dimension+3+i):gap:full);
+    particles_log_fpga = NaN(state_sequence,mcmc_iterations,state_dimension);
+    for j=1:1:state_dimension
+        for i=1:1:state_sequence
+            particles_log_fpga(i,:,j) = outputs_out((theta_dimension+3+state_dimension*(i-1)+j):gap:full);
+        end
     end
+    particles_log_fpga=permute(particles_log_fpga,[1 3 2]);
     filename = strcat('../', sim_type, '/results/particles_log_fpga.mat');
     save(filename,'particles_log_fpga');
     
-    acc_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+2*mcmc_iterations+1));
+    acc_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+(state_sequence*state_dimension)*mcmc_iterations+2*mcmc_iterations+1));
     filename = strcat('../', sim_type, '/results/acc_log_fpga.mat');
     save(filename,'acc_log_fpga');
     
-    prop_thetas_log_fpga = reshape(outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+2*mcmc_iterations+2):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+2*mcmc_iterations)),theta_dimension,mcmc_iterations);
+    prop_thetas_log_fpga = reshape(outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+(state_sequence*state_dimension)*mcmc_iterations+2*mcmc_iterations+2):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+2*mcmc_iterations)),theta_dimension,mcmc_iterations);
     filename = strcat('../', sim_type, '/results/prop_thetas_fpga.mat');
     save(filename,'prop_thetas_log_fpga');
     
-    prop_liks_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+2*mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
+    prop_liks_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+(state_sequence*state_dimension)*mcmc_iterations+1+theta_dimension*mcmc_iterations+2*mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
     filename = strcat('../', sim_type, '/results/prop_liks_log_fpga.mat');
     save(filename,'prop_liks_log_fpga');
     
-    prop_priors_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+2*mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
+    prop_priors_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+(state_sequence*state_dimension)*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+2*mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
     filename = strcat('../', sim_type, '/results/prop_priors_log_fpga.mat');
     save(filename,'prop_priors_log_fpga');
     
-    prop_posteriors_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
+    prop_posteriors_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+(state_sequence*state_dimension)*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
     filename = strcat('../', sim_type, '/results/prop_posteriors_log_fpga.mat');
     save(filename,'prop_posteriors_log_fpga');
     
-    urnd_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
+    urnd_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+(state_sequence*state_dimension)*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
     filename = strcat('../', sim_type, '/results/urnd_log_fpga.mat');
     save(filename,'urnd_log_fpga'); 
     
-    urnd_comp_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
+    urnd_comp_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+(state_sequence*state_dimension)*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
     filename = strcat('../', sim_type, '/results/urnd_comp_log_fpga.mat');
     save(filename,'urnd_comp_log_fpga'); 
     
-    grnd_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
+    grnd_log_fpga = outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+(state_sequence*state_dimension)*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+mcmc_iterations+2*mcmc_iterations+mcmc_iterations));
     filename = strcat('../', sim_type, '/results/grnd_log_fpga.mat');
     save(filename,'grnd_log_fpga'); 
-    
+
+if (software_sim == 1)    
     thetas_log_matlab = reshape(matlab_outputs_out(1:theta_dimension*mcmc_iterations),theta_dimension,mcmc_iterations);
     filename = strcat('../', sim_type, '/results/thetas_log_matlab.mat');
     save(filename,'thetas_log_matlab');
@@ -180,7 +186,7 @@ end
     urnd_log_matlab = matlab_outputs_out((theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+4*mcmc_iterations+mcmc_iterations+1):(theta_dimension*mcmc_iterations+mcmc_iterations+state_sequence*mcmc_iterations+1+theta_dimension*mcmc_iterations+mcmc_iterations+4*mcmc_iterations+mcmc_iterations));
     filename = strcat('../', sim_type, '/results/urnd_log_matlab.mat');
     save(filename,'urnd_log_matlab');    
-    
+end    
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %write a dummy file to tell tcl script to continue with the execution

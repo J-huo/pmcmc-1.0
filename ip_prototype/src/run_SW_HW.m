@@ -267,11 +267,14 @@ for i=1:num_runs
 
         posteriors_log_fpga(i,:) = fpga_outputs_out(i,(theta_dimension+3):gap:full);
         
-        %particles_log_fpga = NaN(state_sequence,iterations,num_runs);
-        for l=1:1:state_sequence
-            particles_log_fpga(l,:,i) = fpga_outputs_out(i,(theta_dimension+3+l):gap:full);
-        end
-        
+        %particles_log_fpga = NaN(state_sequence,iterations,num_runs);        
+        for j=1:1:state_dimension
+            for l=1:1:state_sequence
+                particles_log_fpga(l,:,j,i) = fpga_outputs_out(1,(theta_dimension+3+state_dimension*(l-1)+j):gap:full);
+            end
+        end    
+        particles_log_fpga=permute(particles_log_fpga,[1 3 2 4]);
+      
         for k=1:1:mcmc_iterations
 %            mse_log_fpga(i,k) = mean(power(exp((particles_log_fpga(:,k,i)'))./(exp((particles_log_fpga(:,k,i)'))+1) - mean(probs),2));
         end

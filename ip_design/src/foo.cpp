@@ -144,7 +144,9 @@ void foo	(	volatile data_t_memory *memory_inout,
 	memcpy(prior_parameters,(const data_t_memory*)( memory_inout + (byte_inputs_in_offset/4) + prior_parameters_offset ), prior_parameters_dim * sizeof(data_t_memory));
 
 	for (uint32_t i=0;i<theta_dim;i++){
-		initial_theta[i] = logf(initial_theta[i]);
+		if (positive_only[i] == 1){
+			initial_theta[i] = logf(initial_theta[i]);
+		}
 	}
 
 	//registers

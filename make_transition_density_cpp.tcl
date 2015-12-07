@@ -22,7 +22,7 @@ set rng_init_cycles [lindex $argv 15]
 
 set file [open  ip_design/src/transition_density.cpp w]
 
-puts $file "#include \"transition_density.cpp\""
+puts $file "#include \"transition_density.h\""
 puts $file ""
 puts $file "
 //USED-DEFINED

@@ -6,6 +6,6 @@
 ================================================================
 @I [LIC-101] Checked out feature [HLS]
 @I [HLS-10] Running 'C:/Xilinx/Vivado_HLS/2014.1/bin/unwrapped/win64.o/vivado_hls.exe'
-            for user 'fr909' on host 'ee-gm210' (Windows NT_amd64 version 6.1) on Wed Nov 25 17:07:16 +0000 2015
+            for user 'fr909' on host 'ee-gm210' (Windows NT_amd64 version 6.1) on Thu Dec 03 22:05:34 +0000 2015
             in directory 'C:/Users/fr909/Desktop/pmcmc-1.0'
 @I [LIC-101] Checked in feature [HLS]

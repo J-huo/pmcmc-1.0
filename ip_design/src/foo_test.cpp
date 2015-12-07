@@ -117,9 +117,10 @@ int main()
 	//int theta_dim = (int)inputs_in[9];
 	int iterations = (int)memory_inout[0+byte_inputs_in_offset/4];
 	int state_count = (int)memory_inout[2+byte_inputs_in_offset/4];
+	int state_dimension = (int)memory_inout[3+byte_inputs_in_offset/4];
 
 //#ifndef __SYNTHESIS__
-	int output_size = theta_dim*iterations+3*iterations+state_count*iterations+1+theta_dim*iterations+3*iterations+iterations+iterations+iterations;
+	int output_size = theta_dim*iterations+3*iterations+(state_count*state_dimension)*iterations+1+theta_dim*iterations+3*iterations+iterations+iterations+iterations;
 //#else
 //	int output_size = theta_dim*iterations+iterations+state_count*iterations+1;
 //#endif

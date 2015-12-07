@@ -49,6 +49,9 @@
 
 //FPGA vectors memory maps
 #define inputs_IN_DEFINED_MEM_ADDRESS 33554432
+#define inputs_IN_DEFINED_MEM_ADDRESS_1 33554432
+#define inputs_IN_DEFINED_MEM_ADDRESS_2 33554432
+#define inputs_IN_DEFINED_MEM_ADDRESS_3 33554432
 #define outputs_OUT_DEFINED_MEM_ADDRESS 493554432
 
 
